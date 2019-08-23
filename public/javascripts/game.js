@@ -214,7 +214,7 @@ createScene = function () {
         if(e.keyCode == 16){
             camera.speed=1;
         }
-    }
+    };
     scene.onPointerDown = function (evt) {
         const cameraForwardRay = camera.getForwardRay(10);
         const newPosition = camera.position.add(cameraForwardRay.direction.scale(cameraForwardRay.length));
@@ -262,8 +262,8 @@ engine.runRenderLoop(function () {
 window.addEventListener("resize", function () {
     engine.resize();
 });
-
-var socket = io.connect('http://localhost:3000');
+var no = prompt('Please tell me your name');
+var socket = io.connect('/dynamic-' + no);
 
 socket.on('is_online', function(username) {
     console.log(username)
@@ -271,15 +271,19 @@ socket.on('is_online', function(username) {
 socket.on('username', function(username) {
     console.log(username)
 });
+
+socket.on('hello', function () {
+    console.log('fun')
+});
 var username = prompt('Please tell me your name');
 socket.emit('username', username);
 
 function listen(socket,msg) {
-    console.log(msg)
+    console.log(msg);
     socket.on(msg.toString(), function () {
-        alert('data')
+        alert('data');
         console.log('data')
-    })
+    });
 
     socket.on('chat_message', function(msg){
         $('#messages').append($('<li>').html(msg));

@@ -39,24 +39,4 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-io.sockets.on('connection', function(socket) {
-  socket.on('username', function(username) {
-    socket.username = username;
-    console.log("user entered" + username);
-    io.emit('is_online', '🔵 <i>' + socket.username + ' join the chat..</i>');
-  });
-
-  socket.on('disconnect', function(username) {
-    console.log("user left" + username);
-    io.emit('is_online', '🔴 <i>' + socket.username + ' left the chat..</i>');
-  });
-
-  socket.on('chat_message', function(message) {
-    console.log(message);
-    io.emit(message.toString(),message.toString());
-    io.emit('chat_message', '<strong>' + socket.username + '</strong>: ' + message);
-  });
-});
-
 module.exports = app;
