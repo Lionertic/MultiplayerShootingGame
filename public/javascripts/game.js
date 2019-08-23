@@ -1,80 +1,74 @@
-var line1,line2,line3,line4,xc,yc,zc,camera,cross_reset,i=0;
-
-xc=750;
-yc=375;
+var line1,line2,line3,line4,xc=750,yc=375,zc,camera,cross_reset,i=0;
 var advancedTexture
 function crossInit(){
-     if(!(line1&&line2))
-    {
-        advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-        line1 = new BABYLON.GUI.Line();
-        
-        advancedTexture.addControl(line1);    
-        line2 = new BABYLON.GUI.Line();
-        advancedTexture.addControl(line2);  
-        line3 = new BABYLON.GUI.Line();
-        advancedTexture.addControl(line3); 
-        line4 = new BABYLON.GUI.Line();
-        advancedTexture.addControl(line4); 
-        line1.lineWidth=line2.lineWidth=line3.lineWidth=line4.lineWidth=2
-        cross(xc,yc)
-    }
+
+    advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+    line1 = new BABYLON.GUI.Line();
+
+    advancedTexture.addControl(line1);
+    line2 = new BABYLON.GUI.Line();
+    advancedTexture.addControl(line2);
+    line3 = new BABYLON.GUI.Line();
+    advancedTexture.addControl(line3);
+    line4 = new BABYLON.GUI.Line();
+    advancedTexture.addControl(line4);
+    line1.lineWidth=line2.lineWidth=line3.lineWidth=line4.lineWidth=2
+    cross(xc,yc)
 }
 function crossShoot(x,y)
 {
-   
-line1.x1 = x;
-line1.y1 = y-25;
-line1.x2 = x;
-line1.y2 = y-10;
 
-line2.x1 = x;
-line2.y1 = y+10;
-line2.x2 = x;
-line2.y2 = y+25;
+    line1.x1 = x;
+    line1.y1 = y-25;
+    line1.x2 = x;
+    line1.y2 = y-10;
 
-line3.x1 = x-25;
-line3.y1 = y;
-line3.x2 = x-10;
-line3.y2 = y;
+    line2.x1 = x;
+    line2.y1 = y+10;
+    line2.x2 = x;
+    line2.y2 = y+25;
 
-line4.x1 = x+10;
-line4.y1 = y;
-line4.x2 = x+25;
-line4.y2 = y;
+    line3.x1 = x-25;
+    line3.y1 = y;
+    line3.x2 = x-10;
+    line3.y2 = y;
 
-    
+    line4.x1 = x+10;
+    line4.y1 = y;
+    line4.x2 = x+25;
+    line4.y2 = y;
+
+
 }
 function cross(x,y)
 {
-   
-line1.x1 = x;
-line1.y1 = y-25;
-line1.x2 = x;
-line1.y2 = y;
 
-line2.x1 = x;
-line2.y1 = y;
-line2.x2 = x;
-line2.y2 = y+25;
+    line1.x1 = x;
+    line1.y1 = y-25;
+    line1.x2 = x;
+    line1.y2 = y;
 
-line3.x1 = x-25;
-line3.y1 = y;
-line3.x2 = x;
-line3.y2 = y;
+    line2.x1 = x;
+    line2.y1 = y;
+    line2.x2 = x;
+    line2.y2 = y+25;
 
-line4.x1 = x;
-line4.y1 = y;
-line4.x2 = x+25;
-line4.y2 = y;
+    line3.x1 = x-25;
+    line3.y1 = y;
+    line3.x2 = x;
+    line3.y2 = y;
 
-    
+    line4.x1 = x;
+    line4.y1 = y;
+    line4.x2 = x+25;
+    line4.y2 = y;
+
+
 }
 var a;
 BABYLON.FreeCameraMouseInput.prototype.attachControl = function (element, noPreventDefault) {
 
     var _this = this;
-    crossInit
     var engine = this.camera.getEngine();
     if (!this._pointerInput) {
         this._pointerInput = function (p, s) {
@@ -162,14 +156,14 @@ BABYLON.FreeCameraMouseInput.prototype.attachControl = function (element, noPrev
     };
     this._observer = this.camera.getScene().onPointerObservable.add(this._pointerInput, BABYLON.PointerEventTypes.POINTERDOWN | BABYLON.PointerEventTypes.POINTERUP | BABYLON.PointerEventTypes.POINTERMOVE);
     element.addEventListener(BABYLON.Tools.GetPointerPrefix() +"move", this._onMouseMove, false);
-        
+
 };
 
 var canvas = document.getElementById("renderCanvas");
 
 createScene = function () {
     var scene = new BABYLON.Scene(engine);
-
+    crossInit();
     // Lights
     var light0 = new BABYLON.DirectionalLight("Omni", new BABYLON.Vector3(-2, -5, 2), scene);
     var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, -5, -2), scene);
@@ -268,16 +262,16 @@ createScene = function () {
         // alert(newPosition);
 
         yc-=10;
-                    if(i==0)
-                    {
-                        i++;
-                        xoff=15
-                    }
-                    else{
-                        i--;
-                        xoff=-15
-                    }
-                    crossShoot(xc+xoff,yc);
+        if(i==0)
+        {
+            i++;
+            xoff=15
+        }
+        else{
+            i--;
+            xoff=-15
+        }
+        crossShoot(xc+xoff,yc);
         canvas.requestPointerLock();
         // }
     };
@@ -308,7 +302,7 @@ createScene = function () {
     return scene;
 };
 function crossReset(){
-                
+
     xc=750;
     yc=375;
     cross(xc,yc)
