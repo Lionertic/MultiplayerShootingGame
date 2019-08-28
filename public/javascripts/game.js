@@ -1,5 +1,8 @@
-var line1,line2,line3,line4,xc=750,yc=375,zc,camera,cross_reset,i=0;
+var line1,line2,line3,line4,xc=750,yc=375,zc,camera,crossMove=false,i=0,crossRecoil;
 var advancedTexture
+xc=$(window).width()/2;
+yc=$(window).height()/2;
+
 function crossInit(){
 
     advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -21,19 +24,19 @@ function crossShoot(x,y)
     line1.x1 = x;
     line1.y1 = y-25;
     line1.x2 = x;
-    line1.y2 = y-10;
+    line1.y2 = y-15;
 
     line2.x1 = x;
-    line2.y1 = y+10;
+    line2.y1 = y+15;
     line2.x2 = x;
     line2.y2 = y+25;
 
     line3.x1 = x-25;
     line3.y1 = y;
-    line3.x2 = x-10;
+    line3.x2 = x-15;
     line3.y2 = y;
 
-    line4.x1 = x+10;
+    line4.x1 = x+15;
     line4.y1 = y;
     line4.x2 = x+25;
     line4.y2 = y;
@@ -43,25 +46,25 @@ function crossShoot(x,y)
 function cross(x,y)
 {
 
-    line1.x1 = x;
-    line1.y1 = y-25;
-    line1.x2 = x;
-    line1.y2 = y;
+  line1.x1 = x;
+  line1.y1 = y-25;
+  line1.x2 = x;
+  line1.y2 = y-10;
 
-    line2.x1 = x;
-    line2.y1 = y;
-    line2.x2 = x;
-    line2.y2 = y+25;
+  line2.x1 = x;
+  line2.y1 = y+10;
+  line2.x2 = x;
+  line2.y2 = y+25;
 
-    line3.x1 = x-25;
-    line3.y1 = y;
-    line3.x2 = x;
-    line3.y2 = y;
+  line3.x1 = x-25;
+  line3.y1 = y;
+  line3.x2 = x-10;
+  line3.y2 = y;
 
-    line4.x1 = x;
-    line4.y1 = y;
-    line4.x2 = x+25;
-    line4.y2 = y;
+  line4.x1 = x+10;
+  line4.y1 = y;
+  line4.x2 = x+25;
+  line4.y2 = y;
 
 
 }
@@ -161,8 +164,9 @@ BABYLON.FreeCameraMouseInput.prototype.attachControl = function (element, noPrev
 
 var canvas = document.getElementById("renderCanvas");
 
+
 createScene = function () {
-    var scene = new BABYLON.Scene(engine);
+    var scene = new BABYLON.Scene(engine);canvas.requestPointerLock();
     crossInit();
     // Lights
     var light0 = new BABYLON.DirectionalLight("Omni", new BABYLON.Vector3(-2, -5, 2), scene);
@@ -236,11 +240,8 @@ createScene = function () {
         //     const cameraForwardRay = camera.getForwardRay(10);
         // const newPosition = camera.position.add(cameraForwardRay.direction.scale(cameraForwardRay.length));
         // dot.position = newPosition;
-        if(e.keyCode == 32){
-            //your code
-            console.log("jump");
-            setTimeout(jump(), 1000);
-        }
+
+
         if(e.keyCode == 16){
             // alert("jey")
             camera.speed=0.5;
@@ -249,33 +250,65 @@ createScene = function () {
 
     };
     document.body.onkeydown=function(e){
-        //     const cameraForwardRay = camera.getForwardRay(10);
-        // const newPosition = camera.position.add(cameraForwardRay.direction.scale(cameraForwardRay.length));
-        // dot.position = newPosition;
+
+        if(e.keyCode == 32){
+            //your code
+
+            if(camera.cameraDirection.y<=.5){
+            console.log("jump");
+
+            jump();}
+        }
         if(e.keyCode == 16){
             camera.speed=1;
         }
     };
+    scene.onPointerUp = function(e){
+      // alert("asdklfjas")
+      // crossReset();
+      crossMove=false;
+    }
     scene.onPointerDown = function (evt) {
-        const cameraForwardRay = camera.getForwardRay(10);
-        const newPosition = camera.position.add(cameraForwardRay.direction.scale(cameraForwardRay.length));
-        // alert(newPosition);
 
-        yc-=10;
-        if(i==0)
-        {
-            i++;
-            xoff=15
-        }
-        else{
-            i--;
-            xoff=-15
-        }
-        crossShoot(xc+xoff,yc);
-        canvas.requestPointerLock();
-        // }
+      // while(crossMove){
+      crossMove=true;
+       canvas.requestPointerLock();
+      // }
+
     };
+setInterval(recoil,100)
 
+function recoil()
+{
+  if(!crossMove)
+  {
+    crossReset()
+    console.log("aaa");
+
+  }
+  else {
+    yc-=5;
+    if(i==0)
+    {
+        i++;
+        // xoff=15
+        camera.cameraDirection.x=0.1
+        camera.cameraDirection.y=0.1
+        camera.cameraDirection.z=0.1
+
+
+    }
+    else{
+         i--;
+         camera.cameraDirection.x=-0.1
+         camera.cameraDirection.y=-0.1
+         camera.cameraDirection.z=-0.1
+        // xoff=-15
+    }
+    crossShoot(xc,yc);
+  }
+
+}
 
     // scene.onPointerMove = function (e) {
     //     // console.log(e);
@@ -303,8 +336,8 @@ createScene = function () {
 };
 function crossReset(){
 
-    xc=750;
-    yc=375;
+  xc=$(window).width()/2;
+  yc=$(window).height()/2;
     cross(xc,yc)
 }
 var engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
@@ -320,30 +353,18 @@ engine.runRenderLoop(function () {
 window.addEventListener("resize", function () {
     engine.resize();
 });
-var no = prompt('Please tell me your name');
-var socket = io.connect('/dynamic-' + no);
-
-socket.on('is_online', function(username) {
-    console.log(username)
-});
-socket.on('username', function(username) {
-    console.log(username)
-});
-
-socket.on('hello', function () {
-    console.log('fun')
-});
-var username = prompt('Please tell me your name');
-socket.emit('username', username);
-
-function listen(socket,msg) {
-    console.log(msg);
-    socket.on(msg.toString(), function () {
-        alert('data');
-        console.log('data')
-    });
-
-    socket.on('chat_message', function(msg){
-        $('#messages').append($('<li>').html(msg));
-    });
-}
+// var no = prompt('Please tell me your name');
+// var socket = io.connect('/dynamic-' + no);
+//
+// socket.on('is_online', function(username) {
+//     console.log(username)
+// });
+// socket.on('username', function(username) {
+//     console.log(username)
+// });
+//
+// socket.on('hello', function () {
+//     console.log('fun')
+// });
+// var username = prompt('Please tell me your name');
+// socket.emit('username', username);
