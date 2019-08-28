@@ -3,6 +3,17 @@ var advancedTexture
 xc=$(window).width()/2;
 yc=$(window).height()/2;
 
+function newPlayer(pos)
+{
+    BABYLON.SceneLoader.ImportMesh("", "Scenes/", "dummy3.babylon", scene, function (newMeshes) {
+       });
+}
+
+function jump()
+{
+        camera.cameraDirection.y = 2;
+}
+
 function crossInit(){
 
     advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -18,9 +29,9 @@ function crossInit(){
     line1.lineWidth=line2.lineWidth=line3.lineWidth=line4.lineWidth=2
     cross(xc,yc)
 }
+
 function crossShoot(x,y)
 {
-
     line1.x1 = x;
     line1.y1 = y-25;
     line1.x2 = x;
@@ -40,9 +51,8 @@ function crossShoot(x,y)
     line4.y1 = y;
     line4.x2 = x+25;
     line4.y2 = y;
-
-
 }
+
 function cross(x,y)
 {
 
@@ -65,10 +75,20 @@ function cross(x,y)
   line4.y1 = y;
   line4.x2 = x+25;
   line4.y2 = y;
-
-
 }
-var a;
+
+function randomSpawn()
+{
+ var s_x = Math.random()*10;
+ var s_y = Math.random()*10;
+ var s_z = Math.random()*10;
+ var pos = new Array()
+ pos.push(Math.random()*10)
+ pos.push(Math.random()*10)
+ pos.push(Math.random()*10)
+ return pos;
+}
+
 BABYLON.FreeCameraMouseInput.prototype.attachControl = function (element, noPreventDefault) {
 
     var _this = this;
@@ -137,9 +157,6 @@ BABYLON.FreeCameraMouseInput.prototype.attachControl = function (element, noPrev
         };
     }
     this._onMouseMove = function (evt) {
-        //if (!engine.isPointerLock) {
-        //    return;
-        //}
         if (engine.isInVRExclusivePointerMode) {
             return;
         }
@@ -173,24 +190,31 @@ createScene = function () {
     var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, -5, -2), scene);
     //lights end
     // create camera
-    camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, -8, -20), scene);
+    var nwpos=randomSpawn();
+    alert(nwpos)
+    camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(nwpos[0], nwpos[1], nwpos[2]), scene);
     camera.attachControl(canvas, true);
+    camera.cameraDirection.x=nwpos[0]
+    camera.cameraDirection.y=nwpos[1]
+    camera.cameraDirection.z=nwpos[2]
+
     //create camera end
     //Ground
-    var ground = BABYLON.Mesh.CreatePlane("ground", 110.0, scene);
+    var ground = BABYLON.Mesh.CreatePlane("ground", 200.0, scene);
     ground.material = new BABYLON.StandardMaterial("groundMat", scene);
     ground.material.diffuseColor = new BABYLON.Color3(.3, .3, .3);
     // ground.material.backFaceCulling = false;
     ground.position = new BABYLON.Vector3(5, -10, -15);
     ground.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
     //ground end
+  
+    
     var box = BABYLON.Mesh.CreateBox("crate", 2, scene);
     box.material = new BABYLON.StandardMaterial("Mat", scene);
     box.material.diffuseTexture = new BABYLON.Texture("textures/crate.jpg", scene);
     box.material.diffuseTexture.hasAlpha = true;
     box.position = new BABYLON.Vector3(5, -9, -10);
     //house materials
-
     //red dot
     var dot = BABYLON.MeshBuilder.CreateSphere("rdot",{segments:0,diameter:.1,scene});
     // camera.lockedTarget=dot;
@@ -212,8 +236,6 @@ createScene = function () {
     camera.ellipsoid = new BABYLON.Vector3(1, 2, 1);
     camera.angularSensibility=4000;
     //camera stuff end
-
-
     //collisions
     ground.checkCollisions = true;
     box.checkCollisions=true;
@@ -225,112 +247,78 @@ createScene = function () {
     camera.keysRight.push(68);
     camera.keysLeft.push(65);
     //movement end
-
-
-
     ground.receiveShadows = true;
 
-
-
-    function jump(){
-        camera.cameraDirection.y = 2;
-    }
-
-    document.body.onkeyup = function(e){
-        //     const cameraForwardRay = camera.getForwardRay(10);
-        // const newPosition = camera.position.add(cameraForwardRay.direction.scale(cameraForwardRay.length));
-        // dot.position = newPosition;
-
-
+    document.body.onkeyup = function(e)
+    {
         if(e.keyCode == 16){
             // alert("jey")
             camera.speed=0.5;
         }
-
-
     };
-    document.body.onkeydown=function(e){
-
-        if(e.keyCode == 32){
-            //your code
-
-            if(camera.cameraDirection.y<=.5){
-            console.log("jump");
-
-            jump();}
+    document.body.onkeydown=function(e)
+    {
+        if(e.keyCode == 32)
+        {
+            if(camera.cameraDirection.y<=.5)
+            {
+                console.log("jump");
+                jump();
+            }
         }
-        if(e.keyCode == 16){
+        if(e.keyCode == 16)
+        {
             camera.speed=1;
         }
     };
-    scene.onPointerUp = function(e){
-      // alert("asdklfjas")
-      // crossReset();
+    scene.onPointerUp = function(e)
+    {
       crossMove=false;
     }
-    scene.onPointerDown = function (evt) {
-
-      // while(crossMove){
-      crossMove=true;
-       canvas.requestPointerLock();
-      // }
-
-    };
-setInterval(recoil,100)
-
-function recoil()
-{
-  if(!crossMove)
-  {
-    crossReset()
-    console.log("aaa");
-
-  }
-  else {
-    yc-=5;
-    if(i==0)
+    scene.onPointerDown = function (evt) 
     {
-        i++;
-        // xoff=15
-        camera.cameraDirection.x=0.1
-        camera.cameraDirection.y=0.1
-        camera.cameraDirection.z=0.1
+      crossMove=true;
+      canvas.requestPointerLock();
+    };
+    
+    setInterval(recoil,100)
+
+    function recoil()
+    {
+        if(!crossMove)
+        {
+            crossReset()
+        }
+        else
+        {
+            yc-=5;
+            if(i==0)
+            {
+                i++;
+                // xoff=15
+                camera.cameraDirection.x=0.1
+                camera.cameraDirection.y=0.1
+                camera.cameraDirection.z=0.1
 
 
+            }
+            else
+            {
+                i--;
+                camera.cameraDirection.x=-0.1
+                camera.cameraDirection.y=-0.1
+                camera.cameraDirection.z=-0.1
+                // xoff=-15
+            }
+            crossShoot(xc,yc);
+        }
     }
-    else{
-         i--;
-         camera.cameraDirection.x=-0.1
-         camera.cameraDirection.y=-0.1
-         camera.cameraDirection.z=-0.1
-        // xoff=-15
-    }
-    crossShoot(xc,yc);
-  }
-
-}
-
-    // scene.onPointerMove = function (e) {
-    //     // console.log(e);
-    //     // switch (e.keyCode) {
-    //     //     case 70:
-    //     //     console.log("70 F ");
-    //     //     if (!engine.isFullscreen) {
-    //     //         engine.switchFullscreen(true); //true = requestPointerLock.
-    //     //     }
-    //     //     else if(!engine.isPointerLock && canvas.requestPointerLock){
-    //             canvas.requestPointerLock();
-    //     //     }
-    //     // }
-    // }
 
     scene.registerBeforeRender(function () {
     });
 
     engine.runRenderLoop(function () {
     });
-
-
 
     return scene;
 };
