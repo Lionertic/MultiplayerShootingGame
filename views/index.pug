@@ -1,5 +1,8 @@
-extends layout
-
-block content
-  h1= title
-  p Welcome to #{title}
+head
+  title GAME
+form(method='POST' action='/game')
+  | NAME : 
+  input#name(placeholder='Name' name='name')
+  |             ROOM Id : 
+  input#no(placeholder='ROOM Id' name='no')
+  input(type='submit')

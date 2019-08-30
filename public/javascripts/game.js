@@ -341,18 +341,3 @@ engine.runRenderLoop(function () {
 window.addEventListener("resize", function () {
     engine.resize();
 });
- var no = prompt('Please tell me your name');
- var socket = io.connect('/dynamic-' + no);
-
- socket.on('is_online', function(username) {
-     console.log(username)
- });
- socket.on('username', function(username) {
-     console.log(username)
- });
-
- socket.on('hello', function () {
-     console.log('fun')
- });
- var username = prompt('Please tell me your name');
- socket.emit('username', username);

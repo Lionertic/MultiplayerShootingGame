@@ -3,10 +3,11 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index');
 });
 
-router.get('/game',function (req,res,next) {
-   res.render('game');
+router.post('/game',function (req,res,next) {
+   res.render('game',{values : JSON.stringify(req.body)});
 });
+
 module.exports = router;
