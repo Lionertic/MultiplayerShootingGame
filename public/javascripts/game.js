@@ -8,6 +8,74 @@ function newPlayer(pos)
     BABYLON.SceneLoader.ImportMesh("", "Scenes/", "dummy3.babylon", scene, function (newMeshes) {
        });
 }
+function createMap()
+{
+    var boundry1 = BABYLON.Mesh.CreatePlane("b1", 200.0, scene);
+    boundry1.material = new BABYLON.StandardMaterial("groundMat", scene);
+    boundry1.material.diffuseColor = new BABYLON.Color3.White();
+    boundry1.position = new BABYLON.Vector3(5, -10, 80);
+    boundry1.checkCollisions=true;
+
+    var boundry2 = BABYLON.Mesh.CreatePlane("b2", 200.0, scene);
+    boundry2.material = new BABYLON.StandardMaterial("groundMat", scene);
+    boundry2.material.diffuseColor = new BABYLON.Color3.White();
+    boundry2.position = new BABYLON.Vector3(5, -10, -110);
+    boundry2.rotation = new BABYLON.Vector3(-Math.PI, 0, 0);
+    boundry2.checkCollisions=true;
+
+    var boundry3 = BABYLON.Mesh.CreatePlane("b3", 200.0, scene);
+    boundry3.material = new BABYLON.StandardMaterial("groundMat", scene);
+    boundry3.material.diffuseColor = new BABYLON.Color3.White();
+    boundry3.position = new BABYLON.Vector3(100, -10, -10);
+    boundry3.rotation = new BABYLON.Vector3(Math.PI, -Math.PI/2, 0);
+    boundry3.checkCollisions=true;
+
+    var boundry4 = BABYLON.Mesh.CreatePlane("b4", 200.0, scene);
+    boundry4.material = new BABYLON.StandardMaterial("groundMat", scene);
+    boundry4.material.diffuseColor = new BABYLON.Color3.White();
+    boundry4.position = new BABYLON.Vector3(-93, -10, -10);
+    boundry4.rotation = new BABYLON.Vector3(Math.PI, Math.PI/2, 0);
+    boundry4.checkCollisions=true;
+
+    var brick1 = BABYLON.Mesh.CreateBox("br1", 15, scene);
+    brick1.scaling.x=3
+    brick1.scaling.y=2.1
+    brick1.scaling.z=.5
+    brick1.material = new BABYLON.StandardMaterial("Mat", scene);
+    brick1.position = new BABYLON.Vector3(80, -9, -60); 
+    brick1.material.diffuseTexture = new BABYLON.Texture("textures/brick.jpg", scene);
+    brick1.checkCollisions=true;
+
+
+    var brick2 = BABYLON.Mesh.CreateBox("br1", 15, scene);
+    brick2.scaling.x=3
+    brick2.scaling.y=2.1
+    brick2.scaling.z=.5
+    brick2.material = new BABYLON.StandardMaterial("Mat", scene);
+    brick2.position = new BABYLON.Vector3(80, -9, 40); 
+    brick2.material.diffuseTexture = new BABYLON.Texture("textures/brick.jpg", scene);
+    brick2.checkCollisions=true;
+
+    var brick3 = BABYLON.Mesh.CreateBox("br1", 15, scene);
+    brick3.scaling.x=3
+    brick3.scaling.y=2.1
+    brick3.scaling.z=.5
+    brick3.material = new BABYLON.StandardMaterial("Mat", scene);
+    brick3.position = new BABYLON.Vector3(-71, -9, -60); 
+    brick3.material.diffuseTexture = new BABYLON.Texture("textures/brick.jpg", scene);
+    brick3.checkCollisions=true;
+
+    var brick4 = BABYLON.Mesh.CreateBox("br1", 15, scene);
+    brick4.scaling.x=3
+    brick4.scaling.y=2.1
+    brick4.scaling.z=.5
+    brick4.material = new BABYLON.StandardMaterial("Mat", scene);
+    brick4.position = new BABYLON.Vector3(-71, -9, 40); 
+    brick4.material.diffuseTexture = new BABYLON.Texture("textures/brick.jpg", scene);
+    brick4.checkCollisions=true;
+
+
+}
 
 function jump()
 {
@@ -190,13 +258,14 @@ createScene = function () {
     var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, -5, -2), scene);
     //lights end
     // create camera
-    var nwpos=randomSpawn();
-    alert(nwpos)
-    camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(nwpos[0], nwpos[1], nwpos[2]), scene);
+    // var nwpos=randomSpawn();
+    // alert(nwpos)
+    createMap();
+    camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(5,-9,-10), scene);
     camera.attachControl(canvas, true);
-    camera.cameraDirection.x=nwpos[0]
-    camera.cameraDirection.y=nwpos[1]
-    camera.cameraDirection.z=nwpos[2]
+    // camera.cameraDirection.x=nwpos[0]
+    // camera.cameraDirection.y=nwpos[1]
+    // camera.cameraDirection.z=nwpos[2]
 
     //create camera end
     //Ground
@@ -232,8 +301,8 @@ createScene = function () {
     //camera stuff
     camera.checkCollisions = true;
     camera.applyGravity = true;
-    camera.speed = 0.5;
-    camera.ellipsoid = new BABYLON.Vector3(1, 2, 1);
+    camera.speed = 1.5;
+    camera.ellipsoid = new BABYLON.Vector3(1, 4, 1);
     camera.angularSensibility=4000;
     //camera stuff end
     //collisions
@@ -253,11 +322,14 @@ createScene = function () {
     {
         if(e.keyCode == 16){
             // alert("jey")
-            camera.speed=0.5;
+            camera.speed=1.5;
         }
     };
     document.body.onkeydown=function(e)
     {
+        console.log(camera.position.x)
+        console.log(camera.position.y)
+        console.log(camera.position.z)
         if(e.keyCode == 32)
         {
             if(camera.cameraDirection.y<=.5)
@@ -268,7 +340,7 @@ createScene = function () {
         }
         if(e.keyCode == 16)
         {
-            camera.speed=1;
+            camera.speed=2.5;
         }
     };
     scene.onPointerUp = function(e)
@@ -291,7 +363,7 @@ createScene = function () {
         }
         else
         {
-            yc-=5;
+            // yc-=5;
             if(i==0)
             {
                 i++;
