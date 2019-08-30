@@ -12,13 +12,15 @@ function createMap()
 {
     var boundry1 = BABYLON.Mesh.CreatePlane("b1", 200.0, scene);
     boundry1.material = new BABYLON.StandardMaterial("groundMat", scene);
-    boundry1.material.diffuseColor = new BABYLON.Color3.White();
+    boundry1.material = new BABYLON.StandardMaterial("Mat", scene);
+    boundry1.material.diffuseTexture = new BABYLON.Texture("textures/leftwall.jpg", scene);
     boundry1.position = new BABYLON.Vector3(5, -10, 80);
     boundry1.checkCollisions=true;
 
     var boundry2 = BABYLON.Mesh.CreatePlane("b2", 200.0, scene);
     boundry2.material = new BABYLON.StandardMaterial("groundMat", scene);
-    boundry2.material.diffuseColor = new BABYLON.Color3.White();
+    boundry2.material = new BABYLON.StandardMaterial("Mat", scene);
+    boundry2.material.diffuseTexture = new BABYLON.Texture("textures/rightwall.jpg", scene);
     boundry2.position = new BABYLON.Vector3(5, -10, -110);
     boundry2.rotation = new BABYLON.Vector3(-Math.PI, 0, 0);
     boundry2.checkCollisions=true;
@@ -27,6 +29,8 @@ function createMap()
     boundry3.material = new BABYLON.StandardMaterial("groundMat", scene);
     boundry3.material.diffuseColor = new BABYLON.Color3.White();
     boundry3.position = new BABYLON.Vector3(100, -10, -10);
+    boundry3.material = new BABYLON.StandardMaterial("Mat", scene);
+    boundry3.material.diffuseTexture = new BABYLON.Texture("textures/backwall.jpg", scene);
     boundry3.rotation = new BABYLON.Vector3(Math.PI, -Math.PI/2, 0);
     boundry3.checkCollisions=true;
 
@@ -34,6 +38,8 @@ function createMap()
     boundry4.material = new BABYLON.StandardMaterial("groundMat", scene);
     boundry4.material.diffuseColor = new BABYLON.Color3.White();
     boundry4.position = new BABYLON.Vector3(-93, -10, -10);
+    boundry4.material = new BABYLON.StandardMaterial("Mat", scene);
+    boundry4.material.diffuseTexture = new BABYLON.Texture("textures/backwall.jpg", scene);
     boundry4.rotation = new BABYLON.Vector3(Math.PI, Math.PI/2, 0);
     boundry4.checkCollisions=true;
 
@@ -45,7 +51,6 @@ function createMap()
     brick1.position = new BABYLON.Vector3(80, -9, -60); 
     brick1.material.diffuseTexture = new BABYLON.Texture("textures/brick.jpg", scene);
     brick1.checkCollisions=true;
-
 
     var brick2 = BABYLON.Mesh.CreateBox("br1", 15, scene);
     brick2.scaling.x=3
@@ -74,12 +79,30 @@ function createMap()
     brick4.material.diffuseTexture = new BABYLON.Texture("textures/brick.jpg", scene);
     brick4.checkCollisions=true;
 
+    var cbrick1 = BABYLON.Mesh.CreateBox("br1", 15, scene);
+    cbrick1.scaling.x=4
+    cbrick1.scaling.y=2.1
+    cbrick1.scaling.z=1
+    cbrick1.material = new BABYLON.StandardMaterial("Mat", scene);
+    cbrick1.position = new BABYLON.Vector3(1, -1, 10); 
+    cbrick1.material.diffuseTexture = new BABYLON.Texture("textures/brick1.jpg", scene);
+    cbrick1.checkCollisions=true;
+
+    var cbrick1 = BABYLON.Mesh.CreateBox("br1", 15, scene);
+    cbrick1.scaling.x=4
+    cbrick1.scaling.y=2.1
+    cbrick1.scaling.z=1
+    cbrick1.material = new BABYLON.StandardMaterial("Mat", scene);
+    cbrick1.position = new BABYLON.Vector3(1, -1, -35); 
+    cbrick1.material.diffuseTexture = new BABYLON.Texture("textures/brick1.jpg", scene);
+    cbrick1.checkCollisions=true;
+
 
 }
 
 function jump()
 {
-        camera.cameraDirection.y = 2;
+        camera.cameraDirection.y = 3;
 }
 
 function crossInit(){
@@ -254,8 +277,18 @@ createScene = function () {
     var scene = new BABYLON.Scene(engine);canvas.requestPointerLock();
     crossInit();
     // Lights
-    var light0 = new BABYLON.DirectionalLight("Omni", new BABYLON.Vector3(-2, -5, 2), scene);
-    var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(2, -5, -2), scene);
+    // var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(-5, 100, -14), scene);
+    var light2 = new BABYLON.PointLight("Oi", new BABYLON.Vector3(98,100,-108), scene);
+    var light3 = new BABYLON.PointLight("O", new BABYLON.Vector3(-90,100,-108), scene);
+    var light4 = new BABYLON.PointLight("O", new BABYLON.Vector3(-90,100,78), scene);
+    var light5 = new BABYLON.PointLight("Oi", new BABYLON.Vector3(98,100,78), scene);
+    light2.intensity=0.5;
+    light3.intensity=0.5;
+    light4.intensity=0.5;
+    light5.intensity=0.5;
+
+
+
     //lights end
     // create camera
     // var nwpos=randomSpawn();
@@ -271,19 +304,14 @@ createScene = function () {
     //Ground
     var ground = BABYLON.Mesh.CreatePlane("ground", 200.0, scene);
     ground.material = new BABYLON.StandardMaterial("groundMat", scene);
-    ground.material.diffuseColor = new BABYLON.Color3(.3, .3, .3);
-    // ground.material.backFaceCulling = false;
+    ground.material = new BABYLON.StandardMaterial("Mat", scene);
+    ground.material.diffuseTexture = new BABYLON.Texture("textures/ground.jpg", scene);
     ground.position = new BABYLON.Vector3(5, -10, -15);
     ground.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
     //ground end
   
     
-    var box = BABYLON.Mesh.CreateBox("crate", 2, scene);
-    box.material = new BABYLON.StandardMaterial("Mat", scene);
-    box.material.diffuseTexture = new BABYLON.Texture("textures/crate.jpg", scene);
-    box.material.diffuseTexture.hasAlpha = true;
-    box.position = new BABYLON.Vector3(5, -9, -10);
-    //house materials
+    
     //red dot
     var dot = BABYLON.MeshBuilder.CreateSphere("rdot",{segments:0,diameter:.1,scene});
     // camera.lockedTarget=dot;
@@ -307,7 +335,7 @@ createScene = function () {
     //camera stuff end
     //collisions
     ground.checkCollisions = true;
-    box.checkCollisions=true;
+    // box.checkCollisions=true;
 
     //collisions end
     //movement
