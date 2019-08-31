@@ -330,8 +330,8 @@ createScene = function () {
     camera.checkCollisions = true;
     camera.applyGravity = true;
     camera.speed = 1.5;
-    camera.ellipsoid = new BABYLON.Vector3(1, 4, 1);
-    camera.angularSensibility=4000;
+    camera.ellipsoid = new BABYLON.Vector3(2, 4, 2);
+    camera.angularSensibility=5000;
     //camera stuff end
     //collisions
     ground.checkCollisions = true;
@@ -346,6 +346,8 @@ createScene = function () {
     //movement end
     ground.receiveShadows = true;
 
+   
+
     document.body.onkeyup = function(e)
     {
         if(e.keyCode == 16){
@@ -355,12 +357,12 @@ createScene = function () {
     };
     document.body.onkeydown=function(e)
     {
-        console.log(camera.position.x)
-        console.log(camera.position.y)
-        console.log(camera.position.z)
+        // console.log(camera.position.x)
+        // console.log(camera.position.y)
+        // console.log(camera.position.z)
         if(e.keyCode == 32)
         {
-            if(camera.cameraDirection.y<=.5)
+            if(camera.cameraDirection.y<=.1)
             {
                 console.log("jump");
                 jump();
@@ -377,7 +379,32 @@ createScene = function () {
     }
     scene.onPointerDown = function (evt) 
     {
-      crossMove=true;
+     // crossMove=true;
+      var nextBulletTime = new Date().getTime();
+      const currentTime = new Date().getTime();
+     
+      
+        console.log("Asdf")
+        scene.actionManager = new BABYLON.ActionManager(scene);
+       // if(currentTime>nextBulletTime)
+        //{
+        // var forward = new BABYLON.Vector3(camera.cameraDirection.x,camera.cameraDirection.y,camera.cameraDirection.z);
+        // console.log(camera.getDirection(forward))
+        var direction = camera.getTarget().subtract(camera.position)
+        const bullet = BABYLON.Mesh.CreateBox(`${currentTime}bullet`,0.5, scene);
+        nextBulletTime = new Date().getTime() + 200;
+        bullet.position = camera.getFrontPosition(1);
+        const bulletAction = scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt) {
+            bullet.position.addInPlace(direction);
+            console.log(bullet.position)
+        }));
+        setTimeout(()=>{
+            scene.actionManager.unregisterAction(bulletAction);
+            // bullet.dispose();
+        }, 500)
+    
+    //}
+
       canvas.requestPointerLock();
     };
     
