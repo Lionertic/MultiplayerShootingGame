@@ -1,5 +1,9 @@
-var line1,line2,line3,line4,xc=750,yc=375,zc,camera,crossMove=false,i=0,crossRecoil;
-var advancedTexture
+var line1,line2,line3,line4,xc=750,yc=375,zc,camera,crossMove=false,i=0,crossRecoil,crouch=0;
+var boundry1,boundry2,boundry3,boundry4,brick1,brick2,brick3,brick4,cbrick1,cbrick2,ground;
+var advancedTexture;
+var sid;
+var rayHelper;
+
 xc=$(window).width()/2;
 yc=$(window).height()/2;
 
@@ -8,16 +12,27 @@ function newPlayer(pos)
     BABYLON.SceneLoader.ImportMesh("", "Scenes/", "dummy3.babylon", scene, function (newMeshes) {
        });
 }
+
 function createMap()
 {
-    var boundry1 = BABYLON.Mesh.CreatePlane("b1", 200.0, scene);
+    ground = BABYLON.Mesh.CreateBox("ground", 200.0, scene);
+    ground.scaling.y=0.1
+    ground.material = new BABYLON.StandardMaterial("groundMat", scene);
+    ground.material = new BABYLON.StandardMaterial("Mat", scene);
+    ground.material.diffuseTexture = new BABYLON.Texture("textures/ground.jpg", scene);
+    ground.position = new BABYLON.Vector3(5, -25, -15);
+    ground.checkCollisions = true;
+
+    boundry1 = BABYLON.Mesh.CreateBox("b1", 200.0, scene);
+    boundry1.scaling.z=0.1
     boundry1.material = new BABYLON.StandardMaterial("groundMat", scene);
     boundry1.material = new BABYLON.StandardMaterial("Mat", scene);
     boundry1.material.diffuseTexture = new BABYLON.Texture("textures/leftwall.jpg", scene);
-    boundry1.position = new BABYLON.Vector3(5, -10, 80);
+    boundry1.position = new BABYLON.Vector3(5, -10, 85);
     boundry1.checkCollisions=true;
 
-    var boundry2 = BABYLON.Mesh.CreatePlane("b2", 200.0, scene);
+    boundry2 = BABYLON.Mesh.CreateBox("b2", 200.0, scene);
+    boundry2.scaling.z=0.1
     boundry2.material = new BABYLON.StandardMaterial("groundMat", scene);
     boundry2.material = new BABYLON.StandardMaterial("Mat", scene);
     boundry2.material.diffuseTexture = new BABYLON.Texture("textures/rightwall.jpg", scene);
@@ -25,25 +40,27 @@ function createMap()
     boundry2.rotation = new BABYLON.Vector3(-Math.PI, 0, 0);
     boundry2.checkCollisions=true;
 
-    var boundry3 = BABYLON.Mesh.CreatePlane("b3", 200.0, scene);
+    boundry3 = BABYLON.Mesh.CreateBox("b3", 200.0, scene);
+    boundry3.scaling.z=0.1
     boundry3.material = new BABYLON.StandardMaterial("groundMat", scene);
     boundry3.material.diffuseColor = new BABYLON.Color3.White();
-    boundry3.position = new BABYLON.Vector3(100, -10, -10);
+    boundry3.position = new BABYLON.Vector3(110, -10, -10);
     boundry3.material = new BABYLON.StandardMaterial("Mat", scene);
     boundry3.material.diffuseTexture = new BABYLON.Texture("textures/backwall.jpg", scene);
     boundry3.rotation = new BABYLON.Vector3(Math.PI, -Math.PI/2, 0);
     boundry3.checkCollisions=true;
 
-    var boundry4 = BABYLON.Mesh.CreatePlane("b4", 200.0, scene);
+    boundry4 = BABYLON.Mesh.CreateBox("b4", 200.0, scene);
+    boundry4.scaling.z=0.1
     boundry4.material = new BABYLON.StandardMaterial("groundMat", scene);
     boundry4.material.diffuseColor = new BABYLON.Color3.White();
-    boundry4.position = new BABYLON.Vector3(-93, -10, -10);
+    boundry4.position = new BABYLON.Vector3(-100, -10, -10);
     boundry4.material = new BABYLON.StandardMaterial("Mat", scene);
     boundry4.material.diffuseTexture = new BABYLON.Texture("textures/backwall.jpg", scene);
     boundry4.rotation = new BABYLON.Vector3(Math.PI, Math.PI/2, 0);
     boundry4.checkCollisions=true;
 
-    var brick1 = BABYLON.Mesh.CreateBox("br1", 15, scene);
+    brick1 = BABYLON.Mesh.CreateBox("br1", 15, scene);
     brick1.scaling.x=3
     brick1.scaling.y=2.1
     brick1.scaling.z=.5
@@ -52,7 +69,7 @@ function createMap()
     brick1.material.diffuseTexture = new BABYLON.Texture("textures/brick.jpg", scene);
     brick1.checkCollisions=true;
 
-    var brick2 = BABYLON.Mesh.CreateBox("br1", 15, scene);
+    brick2 = BABYLON.Mesh.CreateBox("br2", 15, scene);
     brick2.scaling.x=3
     brick2.scaling.y=2.1
     brick2.scaling.z=.5
@@ -61,7 +78,7 @@ function createMap()
     brick2.material.diffuseTexture = new BABYLON.Texture("textures/brick.jpg", scene);
     brick2.checkCollisions=true;
 
-    var brick3 = BABYLON.Mesh.CreateBox("br1", 15, scene);
+    brick3 = BABYLON.Mesh.CreateBox("br3", 15, scene);
     brick3.scaling.x=3
     brick3.scaling.y=2.1
     brick3.scaling.z=.5
@@ -70,7 +87,7 @@ function createMap()
     brick3.material.diffuseTexture = new BABYLON.Texture("textures/brick.jpg", scene);
     brick3.checkCollisions=true;
 
-    var brick4 = BABYLON.Mesh.CreateBox("br1", 15, scene);
+    brick4 = BABYLON.Mesh.CreateBox("br4", 15, scene);
     brick4.scaling.x=3
     brick4.scaling.y=2.1
     brick4.scaling.z=.5
@@ -79,7 +96,7 @@ function createMap()
     brick4.material.diffuseTexture = new BABYLON.Texture("textures/brick.jpg", scene);
     brick4.checkCollisions=true;
 
-    var cbrick1 = BABYLON.Mesh.CreateBox("br1", 15, scene);
+    cbrick1 = BABYLON.Mesh.CreateBox("cbr1", 15, scene);
     cbrick1.scaling.x=4
     cbrick1.scaling.y=2.1
     cbrick1.scaling.z=1
@@ -88,16 +105,14 @@ function createMap()
     cbrick1.material.diffuseTexture = new BABYLON.Texture("textures/brick1.jpg", scene);
     cbrick1.checkCollisions=true;
 
-    var cbrick1 = BABYLON.Mesh.CreateBox("br1", 15, scene);
-    cbrick1.scaling.x=4
-    cbrick1.scaling.y=2.1
-    cbrick1.scaling.z=1
-    cbrick1.material = new BABYLON.StandardMaterial("Mat", scene);
-    cbrick1.position = new BABYLON.Vector3(1, -1, -35); 
-    cbrick1.material.diffuseTexture = new BABYLON.Texture("textures/brick1.jpg", scene);
-    cbrick1.checkCollisions=true;
-
-
+    cbrick2 = BABYLON.Mesh.CreateBox("cbr2", 15, scene);
+    cbrick2.scaling.x=4
+    cbrick2.scaling.y=2.1
+    cbrick2.scaling.z=1
+    cbrick2.material = new BABYLON.StandardMaterial("Mat", scene);
+    cbrick2.position = new BABYLON.Vector3(1, -1, -35); 
+    cbrick2.material.diffuseTexture = new BABYLON.Texture("textures/brick1.jpg", scene);
+    cbrick2.checkCollisions=true;
 }
 
 function jump()
@@ -105,8 +120,8 @@ function jump()
         camera.cameraDirection.y = 3;
 }
 
-function crossInit(){
-
+function crossInit()
+{
     advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
     line1 = new BABYLON.GUI.Line();
 
@@ -146,7 +161,6 @@ function crossShoot(x,y)
 
 function cross(x,y)
 {
-
   line1.x1 = x;
   line1.y1 = y-25;
   line1.x2 = x;
@@ -180,53 +194,63 @@ function randomSpawn()
  return pos;
 }
 
-BABYLON.FreeCameraMouseInput.prototype.attachControl = function (element, noPreventDefault) {
-
+BABYLON.FreeCameraMouseInput.prototype.attachControl = function (element, noPreventDefault)
+{
     var _this = this;
     var engine = this.camera.getEngine();
-    if (!this._pointerInput) {
-        this._pointerInput = function (p, s) {
+    if (!this._pointerInput)
+    {
+        this._pointerInput = function (p, s)
+        {
             var evt = p.event;
-            if (engine.isInVRExclusivePointerMode) {
+            if (engine.isInVRExclusivePointerMode)
+            {
                 return;
             }
-            if (!_this.touchEnabled && evt.pointerType === "touch") {
+            if (!_this.touchEnabled && evt.pointerType === "touch")
+            {
                 return;
             }
-            if (p.type !== BABYLON.PointerEventTypes.POINTERMOVE && _this.buttons.indexOf(evt.button) === -1) {
+            if (p.type !== BABYLON.PointerEventTypes.POINTERMOVE && _this.buttons.indexOf(evt.button) === -1)
+            {
                 return;
             }
             var srcElement = (evt.srcElement || evt.target);
-            if (p.type === BABYLON.PointerEventTypes.POINTERDOWN && srcElement) {
-                try {
+            if (p.type === BABYLON.PointerEventTypes.POINTERDOWN && srcElement)
+            {
+                try
+                {
                     srcElement.setPointerCapture(evt.pointerId);
                 }
-                catch (e) {
-                    //Nothing to do with the error. Execution will continue.
-                }
-                _this.previousPosition = {
+                catch (e) {}
+                _this.previousPosition =
+                {
                     x: evt.clientX,
                     y: evt.clientY
                 };
-                if (!noPreventDefault) {
+                if (!noPreventDefault)
+                {
                     evt.preventDefault();
                     element.focus();
                 }
             }
-            else if (p.type === BABYLON.PointerEventTypes.POINTERUP && srcElement) {
-                try {
+            else if (p.type === BABYLON.PointerEventTypes.POINTERUP && srcElement)
+            {
+                try
+                {
                     srcElement.releasePointerCapture(evt.pointerId);
                 }
-                catch (e) {
-                    //Nothing to do with the error.
-                }
+                catch (e) {}
                 _this.previousPosition = null;
-                if (!noPreventDefault) {
+                if (!noPreventDefault)
+                {
                     evt.preventDefault();
                 }
             }
-            else if (p.type === BABYLON.PointerEventTypes.POINTERMOVE) {
-                if (!_this.previousPosition || engine.isPointerLock) {
+            else if (p.type === BABYLON.PointerEventTypes.POINTERMOVE)
+            {
+                if (!_this.previousPosition || engine.isPointerLock) 
+                {
                     return;
                 }
                 var offsetX = evt.clientX - _this.previousPosition.x;
@@ -237,18 +261,22 @@ BABYLON.FreeCameraMouseInput.prototype.attachControl = function (element, noPrev
                 _this.camera.cameraRotation.y += offsetX / _this.angularSensibility;
                 var offsetY = evt.clientY - _this.previousPosition.y;
                 _this.camera.cameraRotation.x += offsetY / _this.angularSensibility;
-                _this.previousPosition = {
+                _this.previousPosition =
+                {
                     x: evt.clientX,
                     y: evt.clientY
                 };
-                if (!noPreventDefault) {
+                if (!noPreventDefault)
+                {
                     evt.preventDefault();
                 }
             }
         };
     }
-    this._onMouseMove = function (evt) {
-        if (engine.isInVRExclusivePointerMode) {
+    this._onMouseMove = function (evt)
+    {
+        if (engine.isInVRExclusivePointerMode) 
+        {
             return;
         }
 
@@ -261,23 +289,98 @@ BABYLON.FreeCameraMouseInput.prototype.attachControl = function (element, noPrev
         var offsetY = evt.movementY || evt.mozMovementY || evt.webkitMovementY || evt.msMovementY || 0;
         _this.camera.cameraRotation.x += offsetY / _this.angularSensibility;
         _this.previousPosition = null;
-        if (!noPreventDefault) {
+        if (!noPreventDefault)
+        {
             evt.preventDefault();
         }
     };
     this._observer = this.camera.getScene().onPointerObservable.add(this._pointerInput, BABYLON.PointerEventTypes.POINTERDOWN | BABYLON.PointerEventTypes.POINTERUP | BABYLON.PointerEventTypes.POINTERMOVE);
     element.addEventListener(BABYLON.Tools.GetPointerPrefix() +"move", this._onMouseMove, false);
-
 };
 
 var canvas = document.getElementById("renderCanvas");
 
+document.body.onkeyup = function(e)
+{
+    if(e.keyCode == 16)
+    {
+        camera.speed=1.5;
+    }
+};
 
-createScene = function () {
-    var scene = new BABYLON.Scene(engine);canvas.requestPointerLock();
+document.body.onkeydown=function(e)
+{
+    if(e.keyCode == 13)
+    {
+        console.log("game started")
+        canvas.requestPointerLock();
+        camera.position.y=-6.95
+    }
+    
+    if(e.keyCode == 32)
+    {
+        if(camera.cameraDirection.y<=.1)
+        {
+            jump();
+        }
+    }
+    if(e.keyCode == 16)
+    {
+        camera.speed=2.5;
+    }
+};
+
+function shoot1()
+{
+    var direction =camera.getTarget().subtract(camera.position)
+    var distance = camera.getFrontPosition(1);
+    var ray = new BABYLON.Ray(distance, direction, 250);
+    rayHelper = new BABYLON.RayHelper(ray);		
+    var hit = scene.pickWithRay(ray);
+    if (hit.pickedMesh)
+    {
+        console.log(hit.pickedMesh.id)
+    }
+} 
+
+function recoil()
+{
+    if(!crossMove)
+    {
+        crossReset()
+    }
+    else
+    {
+        if(i==0)
+        {
+            i++;
+            camera.cameraDirection.x=0.1
+            camera.cameraDirection.y=0.1
+            camera.cameraDirection.z=0.1
+        }
+        else
+        {
+            i--;
+            camera.cameraDirection.x=-0.1
+            camera.cameraDirection.y=-0.1
+            camera.cameraDirection.z=-0.1
+        }
+        crossShoot(xc,yc);
+    }
+}
+
+function crossReset()
+{
+  xc=$(window).width()/2;
+  yc=$(window).height()/2;
+    cross(xc,yc)
+}
+
+createScene = function ()
+{
+    var scene = new BABYLON.Scene(engine);
     crossInit();
-    // Lights
-    // var light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(-5, 100, -14), scene);
+    
     var light2 = new BABYLON.PointLight("Oi", new BABYLON.Vector3(98,100,-108), scene);
     var light3 = new BABYLON.PointLight("O", new BABYLON.Vector3(-90,100,-108), scene);
     var light4 = new BABYLON.PointLight("O", new BABYLON.Vector3(-90,100,78), scene);
@@ -286,175 +389,48 @@ createScene = function () {
     light3.intensity=0.5;
     light4.intensity=0.5;
     light5.intensity=0.5;
-
-
-
-    //lights end
-    // create camera
-    // var nwpos=randomSpawn();
-    // alert(nwpos)
+    
     createMap();
+
+    scene.gravity = new BABYLON.Vector3(0, -0.9, 0);
+    scene.collisionsEnabled = true;
+
     camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(5,-9,-10), scene);
     camera.attachControl(canvas, true);
-    // camera.cameraDirection.x=nwpos[0]
-    // camera.cameraDirection.y=nwpos[1]
-    // camera.cameraDirection.z=nwpos[2]
-
-    //create camera end
-    //Ground
-    var ground = BABYLON.Mesh.CreatePlane("ground", 200.0, scene);
-    ground.material = new BABYLON.StandardMaterial("groundMat", scene);
-    ground.material = new BABYLON.StandardMaterial("Mat", scene);
-    ground.material.diffuseTexture = new BABYLON.Texture("textures/ground.jpg", scene);
-    ground.position = new BABYLON.Vector3(5, -10, -15);
-    ground.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
-    //ground end
-  
-    
-    
-    //red dot
-    var dot = BABYLON.MeshBuilder.CreateSphere("rdot",{segments:0,diameter:.1,scene});
-    // camera.lockedTarget=dot;
-
-    // dot.position = newPosition;
-    // // dot.position=
-
-
-    //gravity
-    scene.gravity = new BABYLON.Vector3(0, -0.9, 0);
-    //gravity end
-    // Enable Collisions
-    scene.collisionsEnabled = true;
-    //enable col end
-    //camera stuff
     camera.checkCollisions = true;
-    camera.applyGravity = true;
     camera.speed = 1.5;
     camera.ellipsoid = new BABYLON.Vector3(2, 4, 2);
-    camera.angularSensibility=5000;
-    //camera stuff end
-    //collisions
-    ground.checkCollisions = true;
-    // box.checkCollisions=true;
-
-    //collisions end
-    //movement
+    camera.angularSensibility=5500;
     camera.keysUp.push(87);
     camera.keysDown.push(83);
     camera.keysRight.push(68);
     camera.keysLeft.push(65);
-    //movement end
-    ground.receiveShadows = true;
+    camera.position.y=100;
+    camera.applyGravity = true;
 
-   
-
-    document.body.onkeyup = function(e)
-    {
-        if(e.keyCode == 16){
-            // alert("jey")
-            camera.speed=1.5;
-        }
-    };
-    document.body.onkeydown=function(e)
-    {
-        // console.log(camera.position.x)
-        // console.log(camera.position.y)
-        // console.log(camera.position.z)
-        if(e.keyCode == 32)
-        {
-            if(camera.cameraDirection.y<=.1)
-            {
-                console.log("jump");
-                jump();
-            }
-        }
-        if(e.keyCode == 16)
-        {
-            camera.speed=2.5;
-        }
-    };
     scene.onPointerUp = function(e)
     {
-      crossMove=false;
+        crossMove=false;
+        clearInterval(sid);
+        rayHelper.dispose()
     }
+
     scene.onPointerDown = function (evt) 
     {
-     // crossMove=true;
-      var nextBulletTime = new Date().getTime();
-      const currentTime = new Date().getTime();
-     
-      
-        console.log("Asdf")
-        scene.actionManager = new BABYLON.ActionManager(scene);
-       // if(currentTime>nextBulletTime)
-        //{
-        // var forward = new BABYLON.Vector3(camera.cameraDirection.x,camera.cameraDirection.y,camera.cameraDirection.z);
-        // console.log(camera.getDirection(forward))
-        var direction = camera.getTarget().subtract(camera.position)
-        const bullet = BABYLON.Mesh.CreateBox(`${currentTime}bullet`,0.5, scene);
-        nextBulletTime = new Date().getTime() + 200;
-        bullet.position = camera.getFrontPosition(1);
-        const bulletAction = scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt) {
-            bullet.position.addInPlace(direction);
-            console.log(bullet.position)
-        }));
-        setTimeout(()=>{
-            scene.actionManager.unregisterAction(bulletAction);
-            // bullet.dispose();
-        }, 500)
-    
-    //}
-
-      canvas.requestPointerLock();
+        canvas.requestPointerLock();
+        sid = setInterval(shoot1,50);
+        crossMove=true;
     };
     
     setInterval(recoil,100)
 
-    function recoil()
-    {
-        if(!crossMove)
-        {
-            crossReset()
-        }
-        else
-        {
-            // yc-=5;
-            if(i==0)
-            {
-                i++;
-                // xoff=15
-                camera.cameraDirection.x=0.1
-                camera.cameraDirection.y=0.1
-                camera.cameraDirection.z=0.1
+    scene.registerBeforeRender(function () {});
 
-
-            }
-            else
-            {
-                i--;
-                camera.cameraDirection.x=-0.1
-                camera.cameraDirection.y=-0.1
-                camera.cameraDirection.z=-0.1
-                // xoff=-15
-            }
-            crossShoot(xc,yc);
-        }
-    }
-
-    scene.registerBeforeRender(function () {
-    });
-
-    engine.runRenderLoop(function () {
-    });
+    engine.runRenderLoop(function () {});
 
     return scene;
 };
-function crossReset(){
 
-  xc=$(window).width()/2;
-  yc=$(window).height()/2;
-    cross(xc,yc)
-}
 var engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
 var scene = createScene();
 
@@ -464,7 +440,6 @@ engine.runRenderLoop(function () {
     }
 });
 
-// Resize
 window.addEventListener("resize", function () {
     engine.resize();
 });
