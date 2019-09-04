@@ -3,10 +3,9 @@ module.exports = (io) => {
         let currentNamespace = socket.nsp;
         console.log("A client has joined in namespace " + socket.nsp.name);
 
-        socket.on('username', (username) => {
-            socket.username = username;
-            console.log(username);
-            currentNamespace.emit('username', socket.username + 'has joined')
+        socket.on('username', (name) => {
+            socket.username = name;
+            currentNamespace.emit('username', socket.username)
         });
 
         socket.on('player_move', (data) => {
@@ -18,7 +17,6 @@ module.exports = (io) => {
         });
 
         socket.on('disconnect', (username) => {
-            console.log(username);
             currentNamespace.emit('is_online', socket.username + 'has left')
         });
     });

@@ -1,17 +1,5 @@
-var line1,line2,line3,line4,xc=750,yc=375,zc,camera,crossMove=false,i=0,crossRecoil,crouch=0;
-var boundry1,boundry2,boundry3,boundry4,brick1,brick2,brick3,brick4,cbrick1,cbrick2,ground;
-var advancedTexture;
-var sid;
-var rayHelper;
-
 xc=$(window).width()/2;
 yc=$(window).height()/2;
-
-function newPlayer(pos)
-{
-    BABYLON.SceneLoader.ImportMesh("", "Scenes/", "dummy3.babylon", scene, function (newMeshes) {
-       });
-}
 
 function createMap()
 {
@@ -429,17 +417,17 @@ createScene = function ()
     };
     
     setInterval(recoil,100)
-
+    
     scene.registerBeforeRender(function () {});
 
     engine.runRenderLoop(function () {});
-
+    
+    
     return scene;
 };
 
 var engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
 var scene = createScene();
-
 engine.runRenderLoop(function () {
     if (scene) {
         scene.render();
