@@ -308,24 +308,31 @@ document.body.onkeyup = function(e)
     }
 };
 
-document.body.onkeydown=function(e)
+document.body.onkeydown = function(e)
 {
-    if(e.keyCode == 13)
-    {
-        console.log("game started")
-        canvas.requestPointerLock();
-        camera.position.y=-6.95
+    if(e.keyCode == 87 || e.keyCode == 83 || e.keyCode == 68 || e.keyCode == 65 ){
+        sendLocationIO()
     }
     
-    if(e.keyCode == 32)
-    {
-        if(camera.cameraDirection.y<=.1)
-        {
+    if(e.keyCode == 13){
+        canvas.requestPointerLock();
+        camera.position.y=-6.95
+        sendLocationIO()
+    }
+
+    if(e.keyCode == 13){
+        canvas.requestPointerLock();
+        camera.position.y=-6.95
+        sendLocationIO()
+    }
+    
+    if(e.keyCode == 32){
+        if(camera.cameraDirection.y<=.1){
             jump();
+            sendLocationIO()
         }
     }
-    if(e.keyCode == 16)
-    {
+    if(e.keyCode == 16){
         camera.speed=2.5;
     }
 };
@@ -337,9 +344,8 @@ function shoot1()
     var ray = new BABYLON.Ray(distance, direction, 250);
     rayHelper = new BABYLON.RayHelper(ray);		
     var hit = scene.pickWithRay(ray);
-    if (hit.pickedMesh)
-    {
-        console.log(hit.pickedMesh.id)
+    if (hit.pickedMesh){
+        sendMouseClickEvent(hit.pickedMesh.id)
     }
 } 
 
@@ -399,7 +405,7 @@ createScene = function ()
     camera.attachControl(canvas, true);
     camera.checkCollisions = true;
     camera.speed = 1.5;
-    camera.ellipsoid = new BABYLON.Vector3(2, 4, 2);
+    camera.ellipsoid = new BABYLON.Vector3(2, 6, 2);
     camera.angularSensibility=5500;
     camera.keysUp.push(87);
     camera.keysDown.push(83);
@@ -443,3 +449,19 @@ engine.runRenderLoop(function () {
 window.addEventListener("resize", function () {
     engine.resize();
 });
+
+function sendLocationIO(){
+    let playerMove = {
+        name : data['name'],
+        pos : camera.getFrontPosition(0)
+    }
+    socketIO.emit('player_move',playerMove)
+}
+
+function sendMouseClickEvent(id){
+    let playerShoot = {
+        name : data['name'],
+        id : id
+    }
+    socketIO.emit('player_shoot',playerShoot)
+}

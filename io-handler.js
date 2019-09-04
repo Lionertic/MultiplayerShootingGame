@@ -9,6 +9,14 @@ module.exports = (io) => {
             currentNamespace.emit('username', socket.username + 'has joined')
         });
 
+        socket.on('player_move', (data) => {
+            currentNamespace.emit('player_move', data)
+        });
+
+        socket.on('player_shoot', (data) => {
+            currentNamespace.emit('player_shoot', data)
+        });
+
         socket.on('disconnect', (username) => {
             console.log(username);
             currentNamespace.emit('is_online', socket.username + 'has left')

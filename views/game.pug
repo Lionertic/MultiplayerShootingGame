@@ -28,7 +28,8 @@ head
 canvas#renderCanvas(onmousemove='crossReset()' <='' canvas='')
 
 script.
-    const data = !{values}
-    socket(data["name"],data["no"])
+    const data = !{values};
+    const socketIO = io.connect('/dynamic-' + data["no"])
+    socket(data["name"],socketIO)
 
 script(src="/javascripts/game.js")
