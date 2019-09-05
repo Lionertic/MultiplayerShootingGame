@@ -1,3 +1,6 @@
+// import { log } from "util";
+
+
 xc=$(window).width()/2;
 yc=$(window).height()/2;
 
@@ -298,26 +301,22 @@ document.body.onkeyup = function(e)
 
 document.body.onkeydown = function(e)
 {
-    if(e.keyCode == 87 || e.keyCode == 83 || e.keyCode == 68 || e.keyCode == 65 ){
-        sendLocationIO()
-    }
+    // if(e.keyCode == 87 || e.keyCode == 83 || e.keyCode == 68 || e.keyCode == 65 ){
+    //     sendLocationIO()
+    // }
+    // console.log(camera.position);
     
     if(e.keyCode == 13){
         canvas.requestPointerLock();
         camera.position.y=-6.95
-        sendLocationIO()
+        // sendLocationIO()
     }
 
-    if(e.keyCode == 13){
-        canvas.requestPointerLock();
-        camera.position.y=-6.95
-        sendLocationIO()
-    }
-    
+   
     if(e.keyCode == 32){
         if(camera.cameraDirection.y<=.1){
             jump();
-            sendLocationIO()
+            // sendLocationIO()
         }
     }
     if(e.keyCode == 16){
@@ -406,8 +405,12 @@ createScene = function ()
     {
         crossMove=false;
         clearInterval(sid);
-        rayHelper.dispose()
+        // rayHelper.dispose()
     }
+
+
+
+
 
     scene.onPointerDown = function (evt) 
     {
@@ -417,6 +420,7 @@ createScene = function ()
     };
     
     setInterval(recoil,100)
+    setInterval(sendLocationIO,5)
     
     scene.registerBeforeRender(function () {});
 
@@ -450,6 +454,17 @@ function sendMouseClickEvent(id){
     let playerShoot = {
         name : data['name'],
         id : id
+        // cam : camera
     }
     socketIO.emit('player_shoot',playerShoot)
+}
+
+
+// socket.on('cam', (data) => {
+//     console.log("sucess cam");
+    
+// });
+
+function abc(){
+    camera.position= new BABYLON.Vector3(5,100,-10)    
 }
