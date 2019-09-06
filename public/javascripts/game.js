@@ -130,6 +130,7 @@ function crossInit()
             meshes[i].parent=camera
             meshes[i].translate(new BABYLON.Vector3(2, 6, -20), 3, BABYLON.Space.LOCAL);
             meshes[i].collisionsEnabled=true;
+            meshes[i].checkCollisions=true;
         }
     });
     advancedTexture.addControl(line1);
