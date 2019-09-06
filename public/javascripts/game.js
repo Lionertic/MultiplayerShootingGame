@@ -119,20 +119,30 @@ function crossInit()
     gun =BABYLON.SceneLoader.ImportMesh("", "scenes/", "gun.babylon", scene, function (meshes) {          
         
           
-          var scalingFactor = new BABYLON.Vector3(0.1, 0.1, 0.2);
+          var scalingFactor = new BABYLON.Vector3(0.01, 0.01, 0.01);
           
           gun_body=meshes[1]
+          console.log(gun_body)
             
         for (var i=0; i<meshes.length;i++){
            
-            meshes[i].scaling=scalingFactor;
+            //  meshes[i].scaling=scalingFactor;
             meshes[i].rotate(camera.getFrontPosition(0), 7 * Math.PI / 6.5, BABYLON.Space.LOCAL);
             meshes[i].parent=camera
-            meshes[i].translate(new BABYLON.Vector3(2, 6, -20), 3, BABYLON.Space.LOCAL);
-            meshes[i].collisionsEnabled=true;
-            meshes[i].checkCollisions=true;
+            // meshes[i].translate(new BABYLON.Vector3(2, 6, -30), 3, BABYLON.Space.LOCAL);
+
+            // meshes[i].collisionsEnabled=true;
+            // meshes[i].checkCollisions=true;
         }
+       gun_body.scaling=scalingFactor  
+    gun_body.position= new BABYLON.Vector3(0.5,-1,5);
+    // gun_body.rotation.x = -Math.PI/2;
+    // gun_body.rotation.y = Math.PI;
+    // gun_body.parent = camera;
+// 
     });
+    // gun_body.position= new BABYLON.Vector3(0.25,-0.4,1);
+
     advancedTexture.addControl(line1);
     line2 = new BABYLON.GUI.Line();
     advancedTexture.addControl(line2);
