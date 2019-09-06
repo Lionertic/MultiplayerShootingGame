@@ -37,6 +37,13 @@ script.
     var rayHelper;
     const socketIO = io.connect('/dynamic-' + data["no"])
     const playerObjects = new Array();
+    var me;
+    
+    socketIO.on('connect', function() {
+        console.log(data['name'])
+        me = new Player(data['name'],socketIO.id)
+    });
+   
      
 
 script(src="/javascripts/game.js")

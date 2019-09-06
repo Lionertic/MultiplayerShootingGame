@@ -1,6 +1,3 @@
-// import { log } from "util";
-
-
 xc=$(window).width()/2;
 yc=$(window).height()/2;
 
@@ -444,7 +441,7 @@ window.addEventListener("resize", function () {
 
 function sendLocationIO(){
     let playerMove = {
-        name : data['name'],
+        id : me.id,
         pos : camera.getFrontPosition(0)
     }
     socketIO.emit('player_move',playerMove)
@@ -452,19 +449,8 @@ function sendLocationIO(){
 
 function sendMouseClickEvent(id){
     let playerShoot = {
-        name : data['name'],
-        id : id
-        // cam : camera
+        id : me.id,
+        hit : id
     }
     socketIO.emit('player_shoot',playerShoot)
-}
-
-
-// socket.on('cam', (data) => {
-//     console.log("sucess cam");
-    
-// });
-
-function abc(){
-    camera.position= new BABYLON.Vector3(5,100,-10)    
 }
