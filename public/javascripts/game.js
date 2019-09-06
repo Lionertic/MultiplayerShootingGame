@@ -110,38 +110,42 @@ function jump()
 {
         camera.cameraDirection.y = 3;
 }
-
+var gunshoot=[];
+var gunside=[];
 function crossInit()
 {
     advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
     line1 = new BABYLON.GUI.Line();
-    var gun_body;
-    gun =BABYLON.SceneLoader.ImportMesh("", "scenes/", "gun.babylon", scene, function (meshes) {          
+    
+    BABYLON.SceneLoader.ImportMesh("", "scenes/", "gun.babylon", scene, function (meshes) {          
         
-          
-          var scalingFactor = new BABYLON.Vector3(0.01, 0.01, 0.01);
-          
-          gun_body=meshes[1]
-          console.log(gun_body)
-            
+        var scalingFactor = new BABYLON.Vector3(0.05, 0.05, 0.05);
         for (var i=0; i<meshes.length;i++){
            
-            //  meshes[i].scaling=scalingFactor;
+            gunshoot.push(meshes[i])
             meshes[i].rotate(camera.getFrontPosition(0), 7 * Math.PI / 6.5, BABYLON.Space.LOCAL);
             meshes[i].parent=camera
-            // meshes[i].translate(new BABYLON.Vector3(2, 6, -30), 3, BABYLON.Space.LOCAL);
-
-            // meshes[i].collisionsEnabled=true;
-            // meshes[i].checkCollisions=true;
         }
-       gun_body.scaling=scalingFactor  
-    gun_body.position= new BABYLON.Vector3(0.5,-1,5);
-    // gun_body.rotation.x = -Math.PI/2;
-    // gun_body.rotation.y = Math.PI;
-    // gun_body.parent = camera;
-// 
+
+        meshes[1].scaling=scalingFactor  
+        meshes[1].position= new BABYLON.Vector3(0.7,-1.8,5);
+
     });
-    // gun_body.position= new BABYLON.Vector3(0.25,-0.4,1);
+
+    // BABYLON.SceneLoader.ImportMesh("", "scenes/", "gun.babylon", scene, function (meshes) {          
+        
+    //     var scalingFactor = new BABYLON.Vector3(0.05, 0.05, 0.05);
+    //     for (var i=0; i<meshes.length;i++){
+           
+    //         gunshoot.push(meshes[i])
+    //         meshes[i].rotate(camera.getFrontPosition(0), 7 * Math.PI / 6.5, BABYLON.Space.LOCAL);
+    //         meshes[i].parent=camera
+    //     }
+
+    //     meshes[1].scaling=scalingFactor  
+    //     meshes[1].position= new BABYLON.Vector3(0.7,-1.8,5);
+
+    // });
 
     advancedTexture.addControl(line1);
     line2 = new BABYLON.GUI.Line();
@@ -354,6 +358,12 @@ document.body.onkeydown = function(e)
 
 function shoot1()
 {
+    for(var i=0; i<gunshoot.length;i++){
+        var mesh = gunshoot[i];
+    mesh.isVisible = false;
+    }
+    
+console.log(gunshoot)
     var direction =camera.getTarget().subtract(camera.position)
     
     particleSystem.emitter = camera.getFrontPosition(3);
@@ -424,7 +434,7 @@ createScene = function ()
     camera.attachControl(canvas, true);
     camera.checkCollisions = true;
     camera.speed = 1.5;
-    camera.ellipsoid = new BABYLON.Vector3(3, 6, 3);
+    camera.ellipsoid = new BABYLON.Vector3(6, 6, 6);
     camera.angularSensibility=5500;
     camera.keysUp.push(87);
     camera.keysDown.push(83);
