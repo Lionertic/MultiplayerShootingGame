@@ -110,6 +110,22 @@ function jump()
 {
         camera.cameraDirection.y = 3;
 }
+
+function gui_gunside(flag)
+{
+    for(var i=0; i<gunside.length;i++){
+        gunside[i].isVisible = flag;
+    }
+}
+
+function gui_gunshoot(flag)
+{
+    for(var i=0; i<gunshoot.length;i++){
+        // gunside[i].rotate(camera.getFrontPosition(0), 7 * Math.PI / 6.5, BABYLON.Space.LOCAL);
+        gunshoot.isVisible = flag;
+    }
+}
+
 var gunshoot=[];
 var gunside=[];
 function crossInit()
@@ -117,13 +133,13 @@ function crossInit()
     advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
     line1 = new BABYLON.GUI.Line();
     
-    BABYLON.SceneLoader.ImportMesh("", "scenes/", "gun.babylon", scene, function (meshes) {          
+    var x1=BABYLON.SceneLoader.ImportMesh("", "scenes/", "gun.babylon", scene, function (meshes) {          
         
         var scalingFactor = new BABYLON.Vector3(0.05, 0.05, 0.05);
         for (var i=0; i<meshes.length;i++){
            
-            gunshoot.push(meshes[i])
-            meshes[i].rotate(camera.getFrontPosition(0), 7 * Math.PI / 6.5, BABYLON.Space.LOCAL);
+            gunside.push(meshes[i])
+            meshes[i].rotate(camera.getFrontPosition(0), 7 * Math.PI / 5, BABYLON.Space.LOCAL);
             meshes[i].parent=camera
         }
 
@@ -132,20 +148,21 @@ function crossInit()
 
     });
 
-    // BABYLON.SceneLoader.ImportMesh("", "scenes/", "gun.babylon", scene, function (meshes) {          
+   var x2= BABYLON.SceneLoader.ImportMesh("", "scenes/", "gun.babylon", scene, function (meshes) {          
         
-    //     var scalingFactor = new BABYLON.Vector3(0.05, 0.05, 0.05);
-    //     for (var i=0; i<meshes.length;i++){
+        var scalingFactor = new BABYLON.Vector3(0.05, 0.05, 0.05);
+        for (var i=0; i<meshes.length;i++){
            
-    //         gunshoot.push(meshes[i])
-    //         meshes[i].rotate(camera.getFrontPosition(0), 7 * Math.PI / 6.5, BABYLON.Space.LOCAL);
-    //         meshes[i].parent=camera
-    //     }
+            gunshoot.push(meshes[i])
+            meshes[i].rotate(camera.getFrontPosition(0), 7 * Math.PI / 6.5, BABYLON.Space.LOCAL);
+            meshes[i].parent=camera
+            meshes[i].isVisible=false;
+        }
 
-    //     meshes[1].scaling=scalingFactor  
-    //     meshes[1].position= new BABYLON.Vector3(0.7,-1.8,5);
+        meshes[1].scaling=scalingFactor  
+        meshes[1].position= new BABYLON.Vector3(0.7,-1.8,5);
 
-    // });
+    });
 
     advancedTexture.addControl(line1);
     line2 = new BABYLON.GUI.Line();
@@ -358,12 +375,9 @@ document.body.onkeydown = function(e)
 
 function shoot1()
 {
-    for(var i=0; i<gunshoot.length;i++){
-        var mesh = gunshoot[i];
-    mesh.isVisible = false;
-    }
     
-console.log(gunshoot)
+    
+// console.log(gunshoot)
     var direction =camera.getTarget().subtract(camera.position)
     
     particleSystem.emitter = camera.getFrontPosition(3);
@@ -472,6 +486,15 @@ createScene = function ()
     {
         crossMove=false;
         clearInterval(sid);
+        gui_gunside(true)
+        gui_gunshoot(false)
+
+
+        // for(var i=0; i<gunshoot.length;i++){
+        //     var mesh = gunside[i];
+        //     mesh.isVisible = false;
+        // }
+
         // rayHelper.dispose()
         particleSystem.stop()
     }
@@ -483,6 +506,15 @@ createScene = function ()
     scene.onPointerDown = function (evt) 
     {
         canvas.requestPointerLock();
+
+        gui_gunside(false)
+        gui_gunshoot(true)
+
+        // for(var i=0; i<gunshoot.length;i++){
+        //     var mesh = gunside[i];
+        //     mesh.isVisible = true;
+        // }
+
         sid = setInterval(shoot1,50);
         // crossMove=true;
         particleSystem = new BABYLON.ParticleSystem("particles", 2000, scene);
