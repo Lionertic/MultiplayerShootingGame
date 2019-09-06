@@ -32,6 +32,7 @@ function socket(name,socket){
             player.position = data['pos'];  
         } else{
             let player = BABYLON.Mesh.CreateBox(data['id'], 6, scene);
+            player.checkCollisions=true;
             var myMaterial = new BABYLON.StandardMaterial("my",scene);
             myMaterial.diffuseColor=new BABYLON.Color3(1,1,1);
             player.material=myMaterial;

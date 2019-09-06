@@ -123,7 +123,6 @@ function crossInit()
           
           gun_body=meshes[1]
             
-        console.log(meshes)
         for (var i=0; i<meshes.length;i++){
            
             meshes[i].scaling=scalingFactor;
@@ -414,7 +413,7 @@ createScene = function ()
     camera.attachControl(canvas, true);
     camera.checkCollisions = true;
     camera.speed = 1.5;
-    camera.ellipsoid = new BABYLON.Vector3(2, 6, 2);
+    camera.ellipsoid = new BABYLON.Vector3(3, 6, 3);
     camera.angularSensibility=5500;
     camera.keysUp.push(87);
     camera.keysDown.push(83);
@@ -515,7 +514,7 @@ window.addEventListener("resize", function () {
 
 function sendLocationIO(){
     let playerMove = {
-        name : data['name'],
+        id : me.id,
         pos : camera.getFrontPosition(0)
     }
     socketIO.emit('player_move',playerMove)
@@ -523,9 +522,8 @@ function sendLocationIO(){
 
 function sendMouseClickEvent(id){
     let playerShoot = {
-        name : data['name'],
-        id : id
-        // cam : camera
+        id : me.id,
+        hit : id
     }
     socketIO.emit('player_shoot',playerShoot)
 }
