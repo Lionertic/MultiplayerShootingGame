@@ -6,6 +6,7 @@ module.exports = (io) => {
 
         socket.on('username', (name) => {
             socket.username = name;
+            socket.playerId = 
             currentNamespace.emit('username', socket.username)
             currentNamespace.emit('player_join',socket.id)
         });
@@ -18,8 +19,8 @@ module.exports = (io) => {
             currentNamespace.emit('player_shoot', data)
         });
 
-        socket.on('disconnect', (username) => {
-            currentNamespace.emit('is_online', socket.username + 'has left')
+        socket.on('disconnect', () => {
+            currentNamespace.emit('player_delete', socket.id)
         });
 
         socket.on('previous_player',(data)=>{

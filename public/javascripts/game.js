@@ -454,3 +454,4 @@ function sendMouseClickEvent(id){
     }
     socketIO.emit('player_shoot',playerShoot)
 }
+
