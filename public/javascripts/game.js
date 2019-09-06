@@ -1,3 +1,6 @@
+// import { log } from "util";
+var gun;
+var particleSystem;
 xc=$(window).width()/2;
 yc=$(window).height()/2;
 
@@ -112,7 +115,24 @@ function crossInit()
 {
     advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
     line1 = new BABYLON.GUI.Line();
-
+    var gun_body;
+    gun =BABYLON.SceneLoader.ImportMesh("", "scenes/", "gun.babylon", scene, function (meshes) {          
+        
+          
+          var scalingFactor = new BABYLON.Vector3(0.1, 0.1, 0.2);
+          
+          gun_body=meshes[1]
+            
+        console.log(meshes)
+        for (var i=0; i<meshes.length;i++){
+           
+            meshes[i].scaling=scalingFactor;
+            meshes[i].rotate(camera.getFrontPosition(0), 7 * Math.PI / 6.5, BABYLON.Space.LOCAL);
+            meshes[i].parent=camera
+            meshes[i].translate(new BABYLON.Vector3(2, 6, -20), 3, BABYLON.Space.LOCAL);
+            meshes[i].collisionsEnabled=true;
+        }
+    });
     advancedTexture.addControl(line1);
     line2 = new BABYLON.GUI.Line();
     advancedTexture.addControl(line2);
@@ -121,6 +141,7 @@ function crossInit()
     line4 = new BABYLON.GUI.Line();
     advancedTexture.addControl(line4);
     line1.lineWidth=line2.lineWidth=line3.lineWidth=line4.lineWidth=2
+
     cross(xc,yc)
 }
 
@@ -324,6 +345,10 @@ document.body.onkeydown = function(e)
 function shoot1()
 {
     var direction =camera.getTarget().subtract(camera.position)
+    
+    particleSystem.emitter = camera.getFrontPosition(3);
+    particleSystem.createDirectedSphereEmitter(.1, direction);
+    // particleSystem.direction1 = direction;
     var distance = camera.getFrontPosition(1);
     var ray = new BABYLON.Ray(distance, direction, 250);
     rayHelper = new BABYLON.RayHelper(ray);		
@@ -344,16 +369,16 @@ function recoil()
         if(i==0)
         {
             i++;
-            camera.cameraDirection.x=0.1
-            camera.cameraDirection.y=0.1
-            camera.cameraDirection.z=0.1
+            camera.cameraDirection.x=0.01
+            camera.cameraDirection.y=0.01
+            camera.cameraDirection.z=0.01
         }
         else
         {
             i--;
-            camera.cameraDirection.x=-0.1
-            camera.cameraDirection.y=-0.1
-            camera.cameraDirection.z=-0.1
+            camera.cameraDirection.x=-0.01
+            camera.cameraDirection.y=-0.01
+            camera.cameraDirection.z=-0.01
         }
         crossShoot(xc,yc);
     }
@@ -398,11 +423,37 @@ createScene = function ()
     camera.position.y=100;
     camera.applyGravity = true;
 
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     scene.onPointerUp = function(e)
     {
         crossMove=false;
         clearInterval(sid);
         // rayHelper.dispose()
+        particleSystem.stop()
     }
 
 
@@ -413,7 +464,30 @@ createScene = function ()
     {
         canvas.requestPointerLock();
         sid = setInterval(shoot1,50);
-        crossMove=true;
+        // crossMove=true;
+        particleSystem = new BABYLON.ParticleSystem("particles", 2000, scene);
+        particleSystem.particleTexture = new BABYLON.Texture("textures/flare.png", scene);
+   
+    // the starting object, the emitter
+    // particleSystem.minEmitBox = new BABYLON.Vector3(-0.5, -0.5, -0.5); // Starting all from
+    // particleSystem.maxEmitBox = new BABYLON.Vector3(0.5, 0.5, 0.5); // To...
+    particleSystem.disposeOnStop = true;
+    particleSystem.minSize = 0.01;
+    particleSystem.maxSize = 0.05;
+    particleSystem.emitRate = 1000;
+    particleSystem.minLifeTime = 0.3;
+    particleSystem.maxLifeTime = 1;
+    particleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
+    particleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
+    particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+    particleSystem.gravity = new BABYLON.Vector3(0, -5, 0);
+
+  //  particleSystem.createSphereEmitter(2);
+
+    // Start the particle system
+    particleSystem.start();
+
+
     };
     
     setInterval(recoil,100)
@@ -441,7 +515,7 @@ window.addEventListener("resize", function () {
 
 function sendLocationIO(){
     let playerMove = {
-        id : me.id,
+        name : data['name'],
         pos : camera.getFrontPosition(0)
     }
     socketIO.emit('player_move',playerMove)
@@ -449,9 +523,19 @@ function sendLocationIO(){
 
 function sendMouseClickEvent(id){
     let playerShoot = {
-        id : me.id,
-        hit : id
+        name : data['name'],
+        id : id
+        // cam : camera
     }
     socketIO.emit('player_shoot',playerShoot)
 }
 
+
+// socket.on('cam', (data) => {
+//     console.log("sucess cam");
+    
+// });
+
+function abc(){
+    camera.position= new BABYLON.Vector3(5,100,-10)    
+}
