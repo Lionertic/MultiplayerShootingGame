@@ -120,16 +120,17 @@ function gui_gunside(flag)
     }
     if(flag)
     {
-    if(z%2==0){
-        // console.log("pos1")
-        gunside[1].position= new BABYLON.Vector3(1.2,-2.2,5);
+        if(z%2==0){
+            // console.log("pos1")
+            gunside[1].position= new BABYLON.Vector3(1.2,-2.2,5);
+        }
+        else
+        {
+            // console.log("pos2")
+            gunside[1].position= new BABYLON.Vector3(0.7,-2.2,5);
+            
+        }
     }
-    else
-    {
-        // console.log("pos2")
-        gunside[1].position= new BABYLON.Vector3(0.7,-2.2,5);
-        
-    }}
     z++
 }
 
@@ -544,37 +545,42 @@ createScene = function ()
 
     scene.onPointerDown = function (evt) 
     {
-        canvas.requestPointerLock();
-        console.log(keylist)
-clearInterval(gid)
-        gui_gunside(false)
-        gui_gunshoot(true)
+       if(evt.which==3)
+       {
+           console.log("hey")
+           gui_gunside(false)
+           gui_gunshoot(false)
+       }
+       else
+       {
+           console.log("adfa")
+            canvas.requestPointerLock();
+            clearInterval(gid)
+            gui_gunside(false)
+            gui_gunshoot(true)
 
 
-        sid = setInterval(shoot1,50);
-        // crossMove=true;
-        particleSystem = new BABYLON.ParticleSystem("particles", 2000, scene);
-        particleSystem.particleTexture = new BABYLON.Texture("textures/flare.png", scene);
-   
-    // the starting object, the emitter
-    // particleSystem.minEmitBox = new BABYLON.Vector3(-0.5, -0.5, -0.5); // Starting all from
-    // particleSystem.maxEmitBox = new BABYLON.Vector3(0.5, 0.5, 0.5); // To...
-    particleSystem.disposeOnStop = true;
-    particleSystem.minSize = 0.01;
-    particleSystem.maxSize = 0.05;
-    particleSystem.emitRate = 1000;
-    particleSystem.minLifeTime = 0.3;
-    particleSystem.maxLifeTime = 1;
-    particleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
-    particleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
-    particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
-    particleSystem.gravity = new BABYLON.Vector3(0, -5, 0);
+            sid = setInterval(shoot1,50);
+            // crossMove=true;
+            particleSystem = new BABYLON.ParticleSystem("particles", 2000, scene);
+            particleSystem.particleTexture = new BABYLON.Texture("textures/flare.png", scene);
+    
+            particleSystem.disposeOnStop = true;
+            particleSystem.minSize = 0.01;
+            particleSystem.maxSize = 0.05;
+            particleSystem.emitRate = 1000;
+            particleSystem.minLifeTime = 0.3;
+            particleSystem.maxLifeTime = 1;
+            particleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
+            particleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
+            particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+            particleSystem.gravity = new BABYLON.Vector3(0, -5, 0);
 
-  //  particleSystem.createSphereEmitter(2);
+        //  particleSystem.createSphereEmitter(2);
 
-    // Start the particle system
-    particleSystem.start();
-
+            // Start the particle system
+            particleSystem.start();
+       }
 
     };
     
