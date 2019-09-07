@@ -132,21 +132,27 @@ function crossInit()
 {
     advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
     line1 = new BABYLON.GUI.Line();
+
+   
     
-    var x1=BABYLON.SceneLoader.ImportMesh("", "scenes/", "gun.babylon", scene, function (meshes) {          
+    // var x1=BABYLON.SceneLoader.ImportMesh("", "scenes/", "gun.babylon", scene, function (meshes) {          
         
-        var scalingFactor = new BABYLON.Vector3(0.05, 0.05, 0.05);
-        for (var i=0; i<meshes.length;i++){
+    //     var scalingFactor = new BABYLON.Vector3(0.05, 0.05, 0.05);
+    //     for (var i=0; i<meshes.length;i++){
            
-            gunside.push(meshes[i])
-            meshes[i].rotate(camera.getFrontPosition(0), 7 * Math.PI / 5, BABYLON.Space.LOCAL);
-            meshes[i].parent=camera
-        }
+    //         gunside.push(meshes[i])
+    //         // console.log(meshes[i].rotation.x)
+    //         // console.log(meshes[i].rotation.y)
+    //         // console.log(meshes[i].rotation.z)
 
-        meshes[1].scaling=scalingFactor  
-        meshes[1].position= new BABYLON.Vector3(0.7,-1.8,5);
+    //         meshes[i].rotate(camera.getFrontPosition(0), 7 * Math.PI / 5, BABYLON.Space.LOCAL);
+    //         meshes[i].parent=camera
+    //     }
 
-    });
+    //     meshes[1].scaling=scalingFactor  
+    //     meshes[1].position= new BABYLON.Vector3(0.7,-1.8,5);
+
+    // });
 
    var x2= BABYLON.SceneLoader.ImportMesh("", "scenes/", "gun.babylon", scene, function (meshes) {          
         
@@ -156,14 +162,13 @@ function crossInit()
             gunshoot.push(meshes[i])
             meshes[i].rotate(camera.getFrontPosition(0), 7 * Math.PI / 6.5, BABYLON.Space.LOCAL);
             meshes[i].parent=camera
-            meshes[i].isVisible=false;
+            // meshes[i].isVisible=false;
         }
 
         meshes[1].scaling=scalingFactor  
         meshes[1].position= new BABYLON.Vector3(0.7,-1.8,5);
 
     });
-
     advancedTexture.addControl(line1);
     line2 = new BABYLON.GUI.Line();
     advancedTexture.addControl(line2);
@@ -486,6 +491,7 @@ createScene = function ()
     {
         crossMove=false;
         clearInterval(sid);
+        
         gui_gunside(true)
         gui_gunshoot(false)
 
