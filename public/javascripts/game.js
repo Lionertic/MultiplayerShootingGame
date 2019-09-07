@@ -1,6 +1,6 @@
 // import { log } from "util";
 var gid;
-var z=0;
+var z=0,keypressed=0;
 var particleSystem;
 xc=$(window).width()/2;
 yc=$(window).height()/2;
@@ -114,17 +114,18 @@ function jump()
 
 function gui_gunside(flag)
 {
-     z=0;
     for(var i=0; i<gunside.length;i++){
         gunside[i].isVisible = flag;
     }
     if(flag)
     {
     if(z%2==0){
+        console.log("pos1")
         gunside[1].position= new BABYLON.Vector3(0.7,-2.5,5);
     }
     else
     {
+        console.log("pos2")
         gunside[1].position= new BABYLON.Vector3(0.7,-2,5);
         
     }}
@@ -372,20 +373,30 @@ var canvas = document.getElementById("renderCanvas");
 
 document.body.onkeyup = function(e)
 {
+    clearInterval(gid)
+    keypressed=0;
     if(e.keyCode == 16)
     {
         camera.speed=1.5;
     }
 };
+function abcd()
+{
+    console.log("same")
+}
 
 document.body.onkeydown = function(e)
 {
+
      if(e.keyCode == 87 || e.keyCode == 83 || e.keyCode == 68 || e.keyCode == 65 ){
-         setTimeout(gui_gunside(true),500);
+        //  gui_gunside(true)
+     }
 // console.log("daf")
+    // }
+    console.log(keypressed);
+    if(keypressed==0){
+    gid=setInterval(function () {gui_gunside(true)  },500);
     }
-    // console.log(camera.position);
-    
     if(e.keyCode == 13){
         canvas.requestPointerLock();
         camera.position.y=-6.95
@@ -402,6 +413,7 @@ document.body.onkeydown = function(e)
     if(e.keyCode == 16){
         camera.speed=2.5;
     }
+    keypressed++;
 };
 
 function shoot1()
