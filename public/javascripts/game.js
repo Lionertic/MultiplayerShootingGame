@@ -1,5 +1,6 @@
 // import { log } from "util";
-var gun;
+var gid;
+var z=0;
 var particleSystem;
 xc=$(window).width()/2;
 yc=$(window).height()/2;
@@ -113,48 +114,72 @@ function jump()
 
 function gui_gunside(flag)
 {
+     z=0;
     for(var i=0; i<gunside.length;i++){
         gunside[i].isVisible = flag;
     }
+    if(flag)
+    {
+    if(z%2==0){
+        gunside[1].position= new BABYLON.Vector3(0.7,-2.5,5);
+    }
+    else
+    {
+        gunside[1].position= new BABYLON.Vector3(0.7,-2,5);
+        
+    }}
+    z++
 }
 
 function gui_gunshoot(flag)
 {
     for(var i=0; i<gunshoot.length;i++){
-        // gunside[i].rotate(camera.getFrontPosition(0), 7 * Math.PI / 6.5, BABYLON.Space.LOCAL);
-        gunshoot.isVisible = flag;
+        gunshoot[i].isVisible = flag;
     }
 }
 
-var gunshoot=[];
-var gunside=[];
+
+var gunshoot=[], gunside=[];
 function crossInit()
 {
     advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
     line1 = new BABYLON.GUI.Line();
 
-   
-    
-    // var x1=BABYLON.SceneLoader.ImportMesh("", "scenes/", "gun.babylon", scene, function (meshes) {          
+    // BABYLON.SceneLoader.ImportMesh("", "scenes/", "gun.babylon", scene, function (meshes) {          
         
     //     var scalingFactor = new BABYLON.Vector3(0.05, 0.05, 0.05);
     //     for (var i=0; i<meshes.length;i++){
            
-    //         gunside.push(meshes[i])
-    //         // console.log(meshes[i].rotation.x)
-    //         // console.log(meshes[i].rotation.y)
-    //         // console.log(meshes[i].rotation.z)
-
+    //         gunmove.push(meshes[i])
     //         meshes[i].rotate(camera.getFrontPosition(0), 7 * Math.PI / 5, BABYLON.Space.LOCAL);
     //         meshes[i].parent=camera
+    //         meshes[i].isVisible=false;
+
     //     }
 
     //     meshes[1].scaling=scalingFactor  
-    //     meshes[1].position= new BABYLON.Vector3(0.7,-1.8,5);
+    //     meshes[1].position= new BABYLON.Vector3(0.7,-2.5,5);
 
     // });
 
-   var x2= BABYLON.SceneLoader.ImportMesh("", "scenes/", "gun.babylon", scene, function (meshes) {          
+    
+    BABYLON.SceneLoader.ImportMesh("", "scenes/", "gun.babylon", scene, function (meshes) {          
+        
+        var scalingFactor = new BABYLON.Vector3(0.05, 0.05, 0.05);
+        for (var i=0; i<meshes.length;i++){
+           
+            gunside.push(meshes[i])
+            meshes[i].rotate(camera.getFrontPosition(0), 7 * Math.PI / 5, BABYLON.Space.LOCAL);
+            meshes[i].parent=camera
+
+        }
+
+        meshes[1].scaling=scalingFactor  
+        meshes[1].position= new BABYLON.Vector3(0.7,-2,5);
+
+    });
+
+   BABYLON.SceneLoader.ImportMesh("", "scenes/", "gun.babylon", scene, function (meshes) {          
         
         var scalingFactor = new BABYLON.Vector3(0.05, 0.05, 0.05);
         for (var i=0; i<meshes.length;i++){
@@ -162,7 +187,7 @@ function crossInit()
             gunshoot.push(meshes[i])
             meshes[i].rotate(camera.getFrontPosition(0), 7 * Math.PI / 6.5, BABYLON.Space.LOCAL);
             meshes[i].parent=camera
-            // meshes[i].isVisible=false;
+            meshes[i].isVisible=false;
         }
 
         meshes[1].scaling=scalingFactor  
@@ -355,9 +380,10 @@ document.body.onkeyup = function(e)
 
 document.body.onkeydown = function(e)
 {
-    // if(e.keyCode == 87 || e.keyCode == 83 || e.keyCode == 68 || e.keyCode == 65 ){
-    //     sendLocationIO()
-    // }
+     if(e.keyCode == 87 || e.keyCode == 83 || e.keyCode == 68 || e.keyCode == 65 ){
+         setTimeout(gui_gunside(true),500);
+// console.log("daf")
+    }
     // console.log(camera.position);
     
     if(e.keyCode == 13){
