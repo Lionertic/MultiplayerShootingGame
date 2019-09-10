@@ -37,17 +37,13 @@ function socket(name,socket){
             myMaterial.diffuseColor=new BABYLON.Color3(1,1,1);
             player.material=myMaterial;
             player.position = data['pos'];
-            // let playerhealth = BABYLON.Mesh.CreateBox(data['id']+'health',10,scene);
-            // playerhealth.scaling.y=0.1
-            // playerhealth.position = data['pos']
-            // playerhealth.position.y = playerhealth.position.y+2     
         }
     });
     
     socket.on('player_delete', function(data) {
         let player = scene.getMeshByID(data)
         player.dispose();    
-        for(var j=0;playerObjects.length;j++){
+        for(var j=0;j<playerObjects.length;j++){
             if(playerObjects[j].id==data){
                 var old = playerObjects.splice(j,j)
                 break;
@@ -56,26 +52,40 @@ function socket(name,socket){
     });
 
     socket.on('player_shoot', function(data) {
-        if(me.id == data['hit']){
+        if(me.id == data['hit'])
+        {
             me.gotHit()
-            if(me.health<=0){
+            if(me.health<=0)
+            {
                 me.health=100;
-                camera.position=new BABYLON.Vector3(5,100,-10);   
-            }
-        } else{
-        for(let i = 0 ; i < playerObjects.length;i++){
-            if(playerObjects[i].id == data['hit']){
-                playerObjects[i].gotHit()
-                let player1 = scene.getMeshByID(playerObjects[i].id);
-                var myMaterial = new BABYLON.StandardMaterial("my",scene);
-                if(playerObjects[i].health<=0){
-                    playerObjects[i].health=100;
-                    myMaterial.diffuseColor=new BABYLON.Color3(1,1,1);
-                } else{
-                    myMaterial.diffuseColor=new BABYLON.Color3(1,playerObjects[i].health/100,playerObjects[i].health/100);
+                for(var j=0;j<playerObjects.length;j++)
+                {
+                    if  (playerObjects[j].id == data['id'] )
+                    {
+                        playerObjects[j].score+=10;
+                        console.log(playerObjects[j].username+' score ->' + playerObjects[j].score)
+                    }
                 }
-                player1.material=myMaterial;
+                camera.position=new BABYLON.Vector3(5,100,-10);
+                // me.score-=5;
             }
+        }
+        else
+        {
+            for(let i = 0 ; i < playerObjects.length;i++)
+            {
+                if(playerObjects[i].id == data['hit']){
+                    playerObjects[i].gotHit()
+                    let player1 = scene.getMeshByID(playerObjects[i].id);
+                    var myMaterial = new BABYLON.StandardMaterial("my",scene);
+                    if(playerObjects[i].health<=0){
+                        playerObjects[i].health=100;
+                        myMaterial.diffuseColor=new BABYLON.Color3(1,1,1);
+                    } else{
+                        myMaterial.diffuseColor=new BABYLON.Color3(1,playerObjects[i].health/100,playerObjects[i].health/100);
+                    }
+                    player1.material=myMaterial;
+                }
         }}
     });
 }
