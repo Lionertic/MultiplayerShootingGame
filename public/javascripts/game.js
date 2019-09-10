@@ -416,6 +416,34 @@ document.body.onkeyup = function(e)
 document.body.onkeydown = function(e)
 {
 
+    if(e.keyCode==81){
+        if(scoreflag==0){
+            console.log("dasf")
+        scoresheet =  BABYLON.MeshBuilder.CreatePlane("myPlane", {width: 3, height: 3}, scene);
+        scoresheet.parent=camera
+        scoresheet.position=new BABYLON.Vector3(0,0,4);
+            var textureGround = new BABYLON.DynamicTexture("dynamic texture", {width:512, height:256}, scene);   
+        var materialGround = new BABYLON.StandardMaterial("Mat", scene);                    
+        materialGround.diffuseTexture=textureGround;
+        scoresheet.material=materialGround;
+        var font = "bold 44px monospace";
+
+        console.log(me.score)
+        var text =""
+        // textureGround.drawText(text, 10, 25, font, "green", "white", true, true);
+
+   
+        for(var i=1;i<playerObjects.length+1;i++)
+        {
+            
+            text = text+""+playerObjects[i-1].username +""+ playerObjects[i-1].score+"";
+           
+            
+        }
+        textureGround.drawText(text, 10, 25, font, "green", "white", true, true);
+        scoreflag++;
+    }
+    }
     console.log(keylist);
     
    if(e.keyCode==32 ||e.keyCode==16 ||e.keyCode==20 || e.keyCode==9)
