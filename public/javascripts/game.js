@@ -1,10 +1,12 @@
 // import { log } from "util";
+var onShoot=false,playerMove=false;
 var scopeflag=0;
 var gid;
 var z=0,keypressed=0;
 var nkey=0 ,keylist=[];
 var particleSystem;
 var scoresheet;
+var 
 xc=$(window).width()/2;
 yc=$(window).height()/2;
 
@@ -117,23 +119,31 @@ function jump()
 
 function gui_gunside(flag)
 {
-    for(var i=0; i<gunside.length;i++){
-        gunside[i].isVisible = flag;
-    }
-    if(flag)
+    
+    
     {
-        if(z%2==0){
-            // console.log("pos1")
-            gunside[1].position= new BABYLON.Vector3(1.2,-2.2,5);
+        
+        for(var i=0; i<gunside.length;i++){
+            if(onShoot)
+                gunside[i].isVisible = false;
+            else
+                gunside[i].isVisible = true;
         }
-        else
+        if(flag)
         {
-            // console.log("pos2")
-            gunside[1].position= new BABYLON.Vector3(0.7,-2.2,5);
-            
+            if(z%2==0){
+                // console.log("pos1")
+                gunside[1].position= new BABYLON.Vector3(1.2,-2.2,5);
+            }
+            else
+            {
+                // console.log("pos2")
+                gunside[1].position= new BABYLON.Vector3(0.7,-2.2,5);
+                
+            }
         }
+        z++
     }
-    z++
 }
 
 function gui_gunshoot(flag)
@@ -145,6 +155,23 @@ function gui_gunshoot(flag)
 
 
 var gunshoot=[], gunside=[];
+function crossRemove()
+{
+    advancedTexture.removeControl(line1)
+    advancedTexture.removeControl(line2)
+    advancedTexture.removeControl(line3)
+    advancedTexture.removeControl(line4)
+}
+function crossAdd(){
+    // if(!playerMove)
+    {
+        advancedTexture.addControl(line1)
+        advancedTexture.addControl(line2)
+        advancedTexture.addControl(line3)
+        advancedTexture.addControl(line4)
+    }
+
+}
 function crossInit()
 {
     advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -172,26 +199,24 @@ function crossInit()
         
         var scalingFactor = new BABYLON.Vector3(0.05, 0.05, 0.05);
         for (var i=0; i<meshes.length;i++){
-           
+
             gunshoot.push(meshes[i])
             meshes[i].rotate(camera.getFrontPosition(0), 7 * Math.PI / 6.5, BABYLON.Space.LOCAL);
             meshes[i].parent=camera
             meshes[i].isVisible=false;
+
         }
 
         meshes[1].scaling=scalingFactor  
         meshes[1].position= new BABYLON.Vector3(0.7,-1.8,5);
 
     });
-    advancedTexture.addControl(line1);
+    line1 = new BABYLON.GUI.Line();
     line2 = new BABYLON.GUI.Line();
-    advancedTexture.addControl(line2);
     line3 = new BABYLON.GUI.Line();
-    advancedTexture.addControl(line3);
     line4 = new BABYLON.GUI.Line();
-    advancedTexture.addControl(line4);
-    line1.lineWidth=line2.lineWidth=line3.lineWidth=line4.lineWidth=2
 
+    line1.lineWidth=line2.lineWidth=line3.lineWidth=line4.lineWidth=2
     cross(xc,yc)
 }
 
@@ -362,14 +387,17 @@ var canvas = document.getElementById("renderCanvas");
 document.body.onkeyup = function(e)
 {
   
+ 
     for(var i=0;i<=keylist.length;i++)
     {
+        
         if(keylist[i]==e.keyCode)
             var rem=keylist.splice(i,i);
     }
     if(keylist.length==1)
     {
         keypressed=0;
+        playerMove=false
     clearInterval(gid)
     }
     if(e.keyCode == 16)
@@ -380,14 +408,18 @@ document.body.onkeyup = function(e)
         scopeflag=0;
         gui_gunside(true)
         gui_gunshoot(false)
+        crossRemove()
     }
 };
 
 
 document.body.onkeydown = function(e)
 {
+
+    console.log(keylist);
+    
    if(e.keyCode==32 ||e.keyCode==16 ||e.keyCode==20 || e.keyCode==9)
-{
+    {
     if(e.keyCode==9){
 
     }
@@ -405,9 +437,11 @@ document.body.onkeydown = function(e)
         scopeflag=1;
         gui_gunside(false)
         gui_gunshoot(false)
+        crossAdd()
     }
 }
 else{
+    playerMove=true;
     var fbit=0;
     for(var i=0;i<keylist.length;i++)
     {
@@ -549,13 +583,14 @@ createScene = function ()
 
     scene.onPointerUp = function(e)
     {
+        onShoot=false
+
         if(e.which!=3){
         crossMove=false;
         clearInterval(sid);
         if(scopeflag!=1){
         gui_gunside(true)
         gui_gunshoot(false)}
-
 
         // for(var i=0; i<gunshoot.length;i++){
         //     var mesh = gunside[i];
@@ -572,6 +607,7 @@ createScene = function ()
 
     scene.onPointerDown = function (evt) 
     {
+    
        if(evt.which==3)
        {
        }
@@ -579,6 +615,8 @@ createScene = function ()
        {
             canvas.requestPointerLock();
             clearInterval(gid)
+        onShoot=true
+
         if(scopeflag!=1){
 
             gui_gunside(false)
