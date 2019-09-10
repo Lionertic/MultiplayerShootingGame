@@ -52,6 +52,7 @@ function socket(name,socket){
     });
 
     socket.on('player_shoot', function(data) {
+        
         if(me.id == data['hit'])
         {
             me.gotHit()
@@ -64,6 +65,10 @@ function socket(name,socket){
                     {
                         playerObjects[j].score+=10;
                         console.log(playerObjects[j].username+' score ->' + playerObjects[j].score)
+                        if(playerObjects[i].score==100)
+                        {
+                            alert("gameover")
+                        }
                     }
                 }
                 camera.position=new BABYLON.Vector3(5,100,-10);

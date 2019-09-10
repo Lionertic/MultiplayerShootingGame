@@ -1,5 +1,5 @@
 // import { log } from "util";
-var onShoot=false,playerMove=false;
+var onShoot=false,playerMove=false,scoreflag=0,scoresheet;
 var scopeflag=0;
 var gid;
 var z=0,keypressed=0;
@@ -387,6 +387,10 @@ var canvas = document.getElementById("renderCanvas");
 document.body.onkeyup = function(e)
 {
   
+    if(e.keyCode==81){
+        scoreflag=0
+        scoresheet.dispose()
+    }
  
     for(var i=0;i<=keylist.length;i++)
     {
@@ -576,7 +580,7 @@ createScene = function ()
     camera.checkCollisions = true;
     camera.speed = 1.5;
     camera.ellipsoid = new BABYLON.Vector3(6, 6, 6);
-    camera.angularSensibility=5500;
+    camera.angularSensibility=5000;
     camera.keysUp.push(87);
     camera.keysDown.push(83);
     camera.keysRight.push(68);
