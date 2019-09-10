@@ -11,7 +11,7 @@ class Player{
     }
     
     gotHit(){
-        this.health -= 1;
+        this.health -= 10;
         // console.log(this.username);
         // console.log(this.health);
         if(this.health<0)

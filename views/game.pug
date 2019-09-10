@@ -27,7 +27,7 @@ head
         }
         
         
-canvas#renderCanvas(onmousemove='crossReset()' <='' canvas='')
+canvas#renderCanvas(onmousemove='crossReset()', canvas='')
 
 script.
     const data = !{values};
@@ -55,3 +55,4 @@ script(src="/javascripts/game.js")
 
 script.
     socket(data["name"],socketIO)
+    

@@ -37,6 +37,10 @@ function socket(name,socket){
             myMaterial.diffuseColor=new BABYLON.Color3(1,1,1);
             player.material=myMaterial;
             player.position = data['pos'];
+            // let playerhealth = BABYLON.Mesh.CreateBox(data['id']+'health',10,scene);
+            // playerhealth.scaling.y=0.1
+            // playerhealth.position = data['pos']
+            // playerhealth.position.y = playerhealth.position.y+2     
         }
     });
     

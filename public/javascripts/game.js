@@ -1,8 +1,10 @@
 // import { log } from "util";
+var scopeflag=0;
 var gid;
 var z=0,keypressed=0;
 var nkey=0 ,keylist=[];
 var particleSystem;
+var scoresheet;
 xc=$(window).width()/2;
 yc=$(window).height()/2;
 
@@ -359,6 +361,7 @@ var canvas = document.getElementById("renderCanvas");
 
 document.body.onkeyup = function(e)
 {
+  
     for(var i=0;i<=keylist.length;i++)
     {
         if(keylist[i]==e.keyCode)
@@ -373,11 +376,38 @@ document.body.onkeyup = function(e)
     {
         camera.speed=1.5;
     }
+    if(e.keyCode==20){
+        scopeflag=0;
+        gui_gunside(true)
+        gui_gunshoot(false)
+    }
 };
 
 
 document.body.onkeydown = function(e)
 {
+   if(e.keyCode==32 ||e.keyCode==16 ||e.keyCode==20 || e.keyCode==9)
+{
+    if(e.keyCode==9){
+
+    }
+    if(e.keyCode == 32){
+        if(camera.cameraDirection.y<=.1){
+            jump();
+            // sendLocationIO()
+        }
+    }
+    if(e.keyCode == 16){
+        camera.speed=2.5;
+    }
+    else if(e.keyCode == 20)
+    {
+        scopeflag=1;
+        gui_gunside(false)
+        gui_gunshoot(false)
+    }
+}
+else{
     var fbit=0;
     for(var i=0;i<keylist.length;i++)
     {
@@ -389,6 +419,7 @@ document.body.onkeydown = function(e)
         keylist.push(e.keyCode)
     }
 
+    console.log(keylist)
 
     if(keypressed==0){
     gid=setInterval(function () {gui_gunside(true)  },400);
@@ -399,17 +430,10 @@ document.body.onkeydown = function(e)
         // sendLocationIO()
     }
 
+    
    
-    if(e.keyCode == 32){
-        if(camera.cameraDirection.y<=.1){
-            jump();
-            // sendLocationIO()
-        }
-    }
-    if(e.keyCode == 16){
-        camera.speed=2.5;
-    }
-    keypressed++;
+    
+    keypressed++;}
 };
 
 function shoot1()
@@ -469,6 +493,8 @@ createScene = function ()
     var scene = new BABYLON.Scene(engine);
     crossInit();
     
+    
+
     var light2 = new BABYLON.PointLight("Oi", new BABYLON.Vector3(98,100,-108), scene);
     var light3 = new BABYLON.PointLight("O", new BABYLON.Vector3(-90,100,-108), scene);
     var light4 = new BABYLON.PointLight("O", new BABYLON.Vector3(-90,100,78), scene);
@@ -523,11 +549,12 @@ createScene = function ()
 
     scene.onPointerUp = function(e)
     {
+        if(e.which!=3){
         crossMove=false;
         clearInterval(sid);
-        
+        if(scopeflag!=1){
         gui_gunside(true)
-        gui_gunshoot(false)
+        gui_gunshoot(false)}
 
 
         // for(var i=0; i<gunshoot.length;i++){
@@ -536,7 +563,7 @@ createScene = function ()
         // }
 
         // rayHelper.dispose()
-        particleSystem.stop()
+        particleSystem.stop()}
     }
 
 
@@ -547,18 +574,16 @@ createScene = function ()
     {
        if(evt.which==3)
        {
-           console.log("hey")
-           gui_gunside(false)
-           gui_gunshoot(false)
        }
        else
        {
-           console.log("adfa")
             canvas.requestPointerLock();
             clearInterval(gid)
+        if(scopeflag!=1){
+
             gui_gunside(false)
             gui_gunshoot(true)
-
+        }
 
             sid = setInterval(shoot1,50);
             // crossMove=true;
@@ -584,6 +609,49 @@ createScene = function ()
 
     };
     
+
+    // function mouse(){
+    //     console.log("sdasd");
+        
+    //     if(evt.which==3)
+    //     {
+    //         console.log("hey")
+    //         gui_gunside(false)
+    //         gui_gunshoot(false)
+    //     }
+    //     else
+    //     {
+    //         console.log("adfa")
+    //          canvas.requestPointerLock();
+    //          clearInterval(gid)
+    //          gui_gunside(false)
+    //          gui_gunshoot(true)
+ 
+ 
+    //          sid = setInterval(shoot1,50);
+    //          // crossMove=true;
+    //          particleSystem = new BABYLON.ParticleSystem("particles", 2000, scene);
+    //          particleSystem.particleTexture = new BABYLON.Texture("textures/flare.png", scene);
+     
+    //          particleSystem.disposeOnStop = true;
+    //          particleSystem.minSize = 0.01;
+    //          particleSystem.maxSize = 0.05;
+    //          particleSystem.emitRate = 1000;
+    //          particleSystem.minLifeTime = 0.3;
+    //          particleSystem.maxLifeTime = 1;
+    //          particleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
+    //          particleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
+    //          particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+    //          particleSystem.gravity = new BABYLON.Vector3(0, -5, 0);
+ 
+    //      //  particleSystem.createSphereEmitter(2);
+ 
+    //          // Start the particle system
+    //          particleSystem.start();
+    //     }
+    // };
+
+
     setInterval(recoil,100)
     setInterval(sendLocationIO,5)
     
