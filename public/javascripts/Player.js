@@ -7,21 +7,22 @@ class Player{
         this.score=0;
     }
 
+    constructor(name,id,health,score){
+        this.username = name;
+        this.health = health;
+        this.id = id;
+        this.score=score;
+    }
+
     setPosition(pos){
         this.pos = pos;
     }
     
     gotHit(){
         this.health -= 5;
-        // console.log(this.username);
-        // console.log(this.health);
         if(this.health<0)
         {
-            console.log("dead")
-            // this.dispose();
-           
+            console.log("dead")       
         }
     }
-
-    
 }
