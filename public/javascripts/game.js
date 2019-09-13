@@ -754,6 +754,13 @@ function sendLocationIO(){
 }
 
 function sendMouseClickEvent(id){
+    playerObjects.forEach(player => {
+        if(player.id === id){
+            if(player.health <= 0){
+                me.score+=10
+            }
+        }
+    });
     let playerShoot = {
         id : me.id,
         hit : id

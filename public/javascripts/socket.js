@@ -22,7 +22,7 @@ function socket(name,socket){
     });
 
     socket.on('new_player',(player)=>{
-        let playerNew = new Player(player['username'],player['id'])
+        let playerNew = new Player(player['username'],player['id'],player['health'],player['score'])
         playerObjects.push(playerNew)  
     });
 
@@ -52,7 +52,6 @@ function socket(name,socket){
     });
 
     socket.on('player_shoot', function(data) {
-        
         if(me.id == data['hit'])
         {
             me.gotHit()
@@ -72,7 +71,6 @@ function socket(name,socket){
                     }
                 }
                 camera.position=new BABYLON.Vector3(5,100,-10);
-                // me.score-=5;
             }
         }
         else
