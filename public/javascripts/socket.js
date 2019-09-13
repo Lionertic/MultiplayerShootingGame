@@ -32,10 +32,15 @@ function socket(name,socket){
             player.position = data['pos'];  
         } else{
             let player = BABYLON.Mesh.CreateBox(data['id'], 6, scene);
+            var box = BABYLON.Mesh.CreateBox(data['id']+"Box", 10.0, scene);box.scaling.x = 0.6;box.scaling.y=0.1;
+            box.scaling.z=0.1
+            box.position.y=box.position.y+5
             player.checkCollisions=true;
+             box.parent=player
             var myMaterial = new BABYLON.StandardMaterial("my",scene);
             myMaterial.diffuseColor=new BABYLON.Color3(1,1,1);
-            player.material=myMaterial;
+            box.material=myMaterial;
+            
             player.position = data['pos'];
         }
     });
@@ -82,6 +87,8 @@ function socket(name,socket){
                 if(playerObjects[i].id == data['hit']){
                     playerObjects[i].gotHit()
                     let player1 = scene.getMeshByID(playerObjects[i].id);
+                    let player1Health = scene.getMeshByID(playerObjects[i].id+"Box");
+                    
                     var myMaterial = new BABYLON.StandardMaterial("my",scene);
                     if(playerObjects[i].health<=0){
                         playerObjects[i].health=100;
@@ -89,7 +96,9 @@ function socket(name,socket){
                     } else{
                         myMaterial.diffuseColor=new BABYLON.Color3(1,playerObjects[i].health/100,playerObjects[i].health/100);
                     }
-                    player1.material=myMaterial;
+                    player1Health.material=myMaterial;
+                    console.log(player1Health);
+
                 }
         }}
     });
